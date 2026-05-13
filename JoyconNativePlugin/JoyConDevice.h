@@ -1,4 +1,5 @@
-#pragma once
+﻿#pragma once
+#include "hidapi.h"
 
 /*
 	役割
@@ -28,7 +29,7 @@ struct JoyConRawInput
 class JoyConDevice
 {
 public:
-	// コンストラクタは引数に「デバイスハンドル」「左右フラグ」を必要とする
+	JoyConDevice(hid_device* hdl, bool isL);	// コンストラクタ
 	bool Connect();			// 接続
 	bool Disconnect();		// 切断
 	bool Update();			// 入力データの更新
@@ -40,6 +41,7 @@ public:
 
 private:
 	JoyConRawInput rawInput;	// Joy-Conから取得した生データ
+	hid_device* handle;			// デバイスハンドル
 	bool isConnected = false;	// 接続状態（true：接続, false：未接続）
 	bool isLeft = false;		// 左右フラグ（true：左, false：右）
 };

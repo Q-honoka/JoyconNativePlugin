@@ -1,6 +1,7 @@
-#pragma once
+﻿#pragma once
 #include "JoyConDevice.h"
 #include <vector>
+#include <thread>
 
 /*
 	役割
@@ -18,8 +19,13 @@
 class JoyConManager
 {
 public:
+	JoyConManager();	// コンストラクタ
 	void Initialize();	// Joy-Conの列挙と、JoyConDeviceの生成を行う
 	void Finalize();	// すべてのJoy-Conを切断する
+	void Update();		// すべてのJoy-Conの入力データを更新する
 private:
-	std::vector<JoyConDevice> joycons;
+	std::vector<JoyConDevice> joycons;	// Joy-Con配列
+
+	std::thread updateThread;	// 更新スレッド
+	bool isRunning;			// 別スレッドが稼働中か（true：稼働中, false：稼働していない）
 };

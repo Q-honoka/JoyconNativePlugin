@@ -1,5 +1,17 @@
-#include "JoyConDevice.h"
+﻿#include "JoyConDevice.h"
 #include "hidapi.h"
+
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="hdl">デバイスハンドル</param>
+/// <param name="isL">左Joy-Conかどうか</param>
+JoyConDevice::JoyConDevice(hid_device* hdl, bool isL) :
+	rawInput(),
+	handle(hdl),
+	isConnected(false),
+	isLeft(isL)
+{ }
 
 /// <summary>
 /// Joy-Conとの通信を接続する

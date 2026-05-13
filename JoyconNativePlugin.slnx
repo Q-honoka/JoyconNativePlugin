@@ -4,4 +4,5 @@
     <Platform Name="x86" />
   </Configurations>
   <Project Path="JoyconNativePlugin/JoyconNativePlugin.vcxproj" Id="f06adf27-c18f-41f7-b65d-4312de5c74b9" />
+  <Project Path="TestJoyconApp/TestJoyconApp.vcxproj" Id="48be2ee8-d325-41ab-a177-3d65a3aa642b" />
 </Solution>
