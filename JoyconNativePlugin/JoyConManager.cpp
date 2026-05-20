@@ -13,11 +13,10 @@ JoyConManager::JoyConManager() :
 	joycons(),
 	updateThread(),
 	isRunning(false)
-{
-}
+{ }
 
 /// <summary>
-/// Joy-Conの列挙と、JoyConDeviceの生成を行う
+/// Joy-Conの列挙と接続、JoyConDeviceの生成を行う
 /// </summary>
 void JoyConManager::Initialize()
 {
@@ -69,18 +68,15 @@ void JoyConManager::Initialize()
 /// </summary>
 void JoyConManager::Finalize()
 {
-	/*
-		やること：Joy-Conの切断
-		・配列の各要素の切断処理を呼ぶ
-		・配列を空にする
-	*/
-
 	// スレッドの停止
 	isRunning = false;
 	if (updateThread.joinable())
 	{
 		updateThread.join();
 	}
+
+	// 配列を空にする（デストラクタで接続解除している）
+	joycons.clear();
 }
 
 /// <summary>
@@ -132,6 +128,7 @@ bool JoyConManager::SetFullReportMode(hid_device* dev)
 	buf[10] = 0x03;		// サブコマンドID
 	buf[11] = 0x30;		// フル入力モード
 
+	// サブコマンドを送信する
 	for (int i = 0; i < RETRY_COUNT; i++)
 	{
 		int result = hid_write(dev, buf, 12);

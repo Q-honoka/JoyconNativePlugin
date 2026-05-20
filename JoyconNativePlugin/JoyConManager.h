@@ -10,6 +10,7 @@
 	責務
 	・HIDAPIを使用してHIDデバイスを列挙する
 	・列挙した結果からJoy-Conを判定して、JoyConDeviceを生成する
+	・Joy-Conとの接続をする
 	・生成したJoyConDeviceを配列で保持する
 
 	情報
