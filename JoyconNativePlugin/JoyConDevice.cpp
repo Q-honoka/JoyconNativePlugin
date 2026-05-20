@@ -1,6 +1,4 @@
 ﻿#include "JoyConDevice.h"
-#include "hidapi.h"
-#include <iostream>
 
 /// <summary>
 /// コンストラクタ
@@ -42,7 +40,7 @@ bool JoyConDevice::Update()
 	int result = hid_read(handle, buffer, sizeof(buffer));
 
 	// データサイズが0より大きいなら、データの処理を行う
-	if (result > 0)
+	if (0 < result)
 	{
 		if (buffer[0] == 0x30)
 		{

@@ -15,6 +15,8 @@
 
 	情報
 	・JoyConDevice配列
+	・更新スレッド
+	・スレッドが稼働中かどうか
 */
 
 class JoyConManager
@@ -26,7 +28,7 @@ public:
 	void Update();		// すべてのJoy-Conの入力データを更新する
 private:
 	bool SetFullReportMode(hid_device* hdl);	// フルデータ取得モードに変更するサブコマンドを送信する
-	std::vector<JoyConDevice> joycons;	// Joy-Con配列
+	std::vector<std::unique_ptr<JoyConDevice>> joycons;	// Joy-Con配列
 
 	std::thread updateThread;	// 更新スレッド
 	bool isRunning;			// 別スレッドが稼働中か（true：稼働中, false：稼働していない）

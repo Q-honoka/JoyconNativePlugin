@@ -30,10 +30,10 @@ void JoyConManager::Initialize()
 		if (device->vendor_id == VENDOR_NINTENDO)
 		{
 			bool isLeft = device->product_id == PRODUCT_JOYCON_L;
-			
+
 			hid_device* dev = hid_open(
-				device->vendor_id, 
-				device->product_id, 
+				device->vendor_id,
+				device->product_id,
 				device->serial_number
 			);
 
@@ -44,7 +44,8 @@ void JoyConManager::Initialize()
 
 				if (SetFullReportMode(dev))
 				{
-					joycons.emplace_back(JoyConDevice(dev, isLeft));
+					printf("サブコマンドの送信成功\n");
+					joycons.emplace_back(std::make_unique<JoyConDevice>(dev, isLeft));
 				}
 				else
 				{
@@ -86,9 +87,11 @@ void JoyConManager::Update()
 {
 	while (isRunning)
 	{
-		for (JoyConDevice& j : joycons)
+		for (auto& j : joycons)
 		{
-			j.Update();
+			if (!isRunning) break;
+
+			j->Update();
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
@@ -105,7 +108,7 @@ void JoyConManager::Update()
 /// </returns>
 bool JoyConManager::SetFullReportMode(hid_device* dev)
 {
-	const int RETRY_COUNT = 3;
+	const int RETRY_COUNT = 5;
 
 	// サブコマンドの作成
 	unsigned char buf[64] = { 0 };
@@ -134,8 +137,12 @@ bool JoyConManager::SetFullReportMode(hid_device* dev)
 		int result = hid_write(dev, buf, 12);
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
+		// データを仮取得する
+		unsigned char readBuf[64] = { 0 };
+		hid_read(dev, readBuf, 64);
 
-		if (0 < result)
+		// 応答があったらtrueを返す
+		if (0 < result && readBuf[0] == 0x21)
 		{
 			return true;
 		}
