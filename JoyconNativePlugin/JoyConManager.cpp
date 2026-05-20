@@ -1,6 +1,5 @@
 ﻿#include "JoyConManager.h"
 #include "hidapi.h"
-#include <stdio.h>
 
 constexpr int VENDOR_NINTENDO = 0x057E;		// 任天堂のベンダーID（1406）
 
@@ -42,7 +41,16 @@ void JoyConManager::Initialize()
 			// 空でなければ、JoyConDeviceを生成して追加する
 			if (dev != nullptr)
 			{
-				joycons.emplace_back(JoyConDevice(dev, isLeft));
+				hid_set_nonblocking(dev, 1);
+
+				if (SetFullReportMode(dev))
+				{
+					joycons.emplace_back(JoyConDevice(dev, isLeft));
+				}
+				else
+				{
+					printf("サブコマンドの送信失敗\n");
+				}
 			}
 		}
 
@@ -89,4 +97,54 @@ void JoyConManager::Update()
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
+}
+
+/// <summary>
+/// フルデータ取得モードに変更するサブコマンドを送信する
+/// </summary>
+/// <param name="dev">デバイスハンドル</param>
+/// <returns>送信結果
+/// <para>true：成功</para>
+/// <para>false：失敗</para>
+/// </returns>
+bool JoyConManager::SetFullReportMode(hid_device* dev)
+{
+	const int RETRY_COUNT = 3;
+
+	// サブコマンドの作成
+	unsigned char buf[64] = { 0 };
+
+	static unsigned char timer = 0;
+
+	buf[0] = 0x01;		// レポートID
+	buf[1] = timer++;	// タイマー（毎回変える）
+
+	// rumble
+	buf[2] = 0x00;
+	buf[3] = 0x00;
+	buf[4] = 0x00;
+	buf[5] = 0x00;
+	buf[6] = 0x00;
+	buf[7] = 0x00;
+	buf[8] = 0x00;
+	buf[9] = 0x00;
+
+	buf[10] = 0x03;		// サブコマンドID
+	buf[11] = 0x30;		// フル入力モード
+
+	for (int i = 0; i < RETRY_COUNT; i++)
+	{
+		int result = hid_write(dev, buf, 12);
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+
+		if (0 < result)
+		{
+			return true;
+		}
+
+		printf("サブコマンドの送信失敗, リトライ回数 %d\n", i);
+	}
+
+	return false;
 }

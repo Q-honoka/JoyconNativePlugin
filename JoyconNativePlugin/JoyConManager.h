@@ -24,6 +24,7 @@ public:
 	void Finalize();	// すべてのJoy-Conを切断する
 	void Update();		// すべてのJoy-Conの入力データを更新する
 private:
+	bool SetFullReportMode(hid_device* hdl);	// フルデータ取得モードに変更するサブコマンドを送信する
 	std::vector<JoyConDevice> joycons;	// Joy-Con配列
 
 	std::thread updateThread;	// 更新スレッド

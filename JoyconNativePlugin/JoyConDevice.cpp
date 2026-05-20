@@ -1,5 +1,6 @@
 ﻿#include "JoyConDevice.h"
 #include "hidapi.h"
+#include <iostream>
 
 /// <summary>
 /// コンストラクタ
@@ -55,7 +56,22 @@ bool JoyConDevice::Update()
 		・取得できなかったらfalseを返す
 		・取得できたらtrueを返す
 	*/
+	if (!handle)
+	{
+		return false;
+	}
+
+	unsigned char buffer[64];  // 取得するデータのバッファサイズは64バイト
+
+	int result = hid_read(handle, buffer, sizeof(buffer));
+	
+	if (result > 0)
+	{
+		return true;
+	}
+
 	return false;
+
 }
 
 /// <summary>
