@@ -150,6 +150,8 @@
   <ItemGroup>
     <ClInclude Include="..\JoyconNativePlugin\JoyConDevice.h" />
     <ClInclude Include="..\JoyconNativePlugin\JoyConManager.h" />
+    <ClInclude Include="..\JoyconNativePlugin\JoyConTypes.h" />
+    <ClInclude Include="..\JoyconNativePlugin\JoyConUtility.h" />
     <ClInclude Include="..\JoyconNativePlugin\pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

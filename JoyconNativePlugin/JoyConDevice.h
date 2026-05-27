@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "hidapi.h"
+#include "JoyConTypes.h"
 
 /*
 	役割
@@ -14,22 +15,6 @@
 	・接続ハンドル
 	・右か左か
 */
-
-// Joy-Conから取得した生データ
-struct JoyConRawInput
-{	
-	unsigned char data[64];
-	/* 
-	[0]		データの種類
-	[1]		フレームカウンタ
-	[2]		バッテリーと接続状態
-	[3～5]	ボタンデータ
-	[6～11]	システムデータ（開発では使用しない）
-	[12]	振動応答
-	[13～18]スティックデータ
-	[19～48]モーションセンサー
-	*/
-};
 
 class JoyConDevice
 {

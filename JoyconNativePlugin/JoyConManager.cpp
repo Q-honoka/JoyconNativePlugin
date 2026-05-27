@@ -1,5 +1,7 @@
 ﻿#include "JoyConManager.h"
 #include "hidapi.h"
+#include "JoyConTypes.h"
+#include "JoyConUtility.h"
 
 constexpr int VENDOR_NINTENDO = 0x057E;		// 任天堂のベンダーID（1406）
 
@@ -14,6 +16,16 @@ JoyConManager::JoyConManager() :
 	updateThread(),
 	isRunning(false)
 { }
+
+/// <summary>
+/// インスタンスの参照を返す
+/// </summary>
+/// <returns></returns>
+JoyConManager& JoyConManager::GetInstance()
+{
+	static JoyConManager instance;
+	return instance;
+}
 
 /// <summary>
 /// Joy-Conの列挙と接続、JoyConDeviceの生成を行う
@@ -94,6 +106,11 @@ void JoyConManager::Update()
 			j->Update();
 		}
 
+		if (IsButtonDpadDown())
+		{
+			printf("下押した\n");
+		}
+
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
 }
@@ -151,4 +168,13 @@ bool JoyConManager::SetFullReportMode(hid_device* dev)
 	}
 
 	return false;
+}
+
+/// <summary>
+/// Joy-Conの下ボタンが押されているか返す
+/// </summary>
+/// <returns></returns>
+bool JoyConManager::IsButtonDpadDown()
+{
+	return JoyConUtility::GetButtonDpadDown(joycons[0]->GetJoyConRawInput());
 }

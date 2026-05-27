@@ -7,14 +7,12 @@
 
 int main()
 {
-    JoyConManager manager;
-
-    manager.Initialize();
+    JoyConManager::GetInstance().Initialize();
 
     std::cout << "Press Enter to exit...\n";
     std::cin.get();
 
-    manager.Finalize();
+    JoyConManager::GetInstance().Finalize();
 
     return 0;
 }

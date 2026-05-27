@@ -19,14 +19,25 @@
 	・スレッドが稼働中かどうか
 */
 
+struct JoyConRawInput;
+
 class JoyConManager
 {
 public:
-	JoyConManager();	// コンストラクタ
+	static JoyConManager& GetInstance();	// インスタンスを渡す
 	void Initialize();	// Joy-Conの列挙と、JoyConDeviceの生成を行う
 	void Finalize();	// すべてのJoy-Conを切断する
 	void Update();		// すべてのJoy-Conの入力データを更新する
+
+	// Joy-Conのデータを渡す関数
+	bool IsButtonDpadDown();		// 下ボタン
+
+	// コピーガード
+	JoyConManager(const JoyConManager& other) = delete;
+	JoyConManager& operator=(const JoyConManager& other) = delete;
+
 private:
+	JoyConManager();	// コンストラクタ
 	bool SetFullReportMode(hid_device* hdl);	// フルデータ取得モードに変更するサブコマンドを送信する
 	std::vector<std::unique_ptr<JoyConDevice>> joycons;	// Joy-Con配列
 

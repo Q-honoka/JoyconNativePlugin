@@ -147,6 +147,8 @@
     <ClInclude Include="JoyConDevice.h" />
     <ClInclude Include="JoyConManager.h" />
     <ClInclude Include="JoyconNativePlugin.h" />
+    <ClInclude Include="JoyConTypes.h" />
+    <ClInclude Include="JoyConUtility.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

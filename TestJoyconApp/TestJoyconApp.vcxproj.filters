@@ -44,5 +44,11 @@
     <ClInclude Include="..\JoyconNativePlugin\pch.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\JoyconNativePlugin\JoyConTypes.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JoyconNativePlugin\JoyConUtility.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
