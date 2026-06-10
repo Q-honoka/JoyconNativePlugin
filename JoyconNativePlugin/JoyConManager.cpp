@@ -106,9 +106,10 @@ void JoyConManager::Update()
 			j->Update();
 		}
 
-		if (IsButtonDpadDown())
+		// 下ボタンを押したらログを出す
+		if (IsButtonPressed(0, BUTTON_HOME))
 		{
-			printf("下押した\n");
+			printf("押した\n");
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
@@ -171,10 +172,12 @@ bool JoyConManager::SetFullReportMode(hid_device* dev)
 }
 
 /// <summary>
-/// Joy-Conの下ボタンが押されているか返す
+/// 引数で指定されたJoy-Conのボタンが押されたか返す
 /// </summary>
-/// <returns></returns>
-bool JoyConManager::IsButtonDpadDown()
+/// <param name="index">Joy-Conの番号</param>
+/// <param name="kind">ボタンの種類</param>
+/// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
+bool JoyConManager::IsButtonPressed(int index, ButtonKind kind)
 {
-	return JoyConUtility::GetButtonDpadDown(joycons[0]->GetJoyConRawInput());
+	return JoyConUtility::IsButtonPressed(joycons[index]->GetJoyConRawInput(), kind, joycons[index]->IsLeft());
 }

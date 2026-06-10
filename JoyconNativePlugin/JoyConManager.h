@@ -27,10 +27,9 @@ public:
 	static JoyConManager& GetInstance();	// インスタンスを渡す
 	void Initialize();	// Joy-Conの列挙と、JoyConDeviceの生成を行う
 	void Finalize();	// すべてのJoy-Conを切断する
-	void Update();		// すべてのJoy-Conの入力データを更新する
 
 	// Joy-Conのデータを渡す関数
-	bool IsButtonDpadDown();		// 下ボタン
+	bool IsButtonPressed(int index, ButtonKind kind);	// 引数で指定されたJoy-Conのボタンが押されたか返す
 
 	// コピーガード
 	JoyConManager(const JoyConManager& other) = delete;
@@ -38,6 +37,7 @@ public:
 
 private:
 	JoyConManager();	// コンストラクタ
+	void Update();		// すべてのJoy-Conの入力データを更新する
 	bool SetFullReportMode(hid_device* hdl);	// フルデータ取得モードに変更するサブコマンドを送信する
 	std::vector<std::unique_ptr<JoyConDevice>> joycons;	// Joy-Con配列
 

@@ -19,3 +19,27 @@ struct JoyConRawInput
 	[19～48]モーションセンサー
 	*/
 };
+
+// ボタンの種類
+enum ButtonKind
+{
+	BUTTON_DOWN,	// 下
+	BUTTON_UP,		// 上
+	BUTTON_RIGHT,	// 右
+	BUTTON_LEFT,	// 左
+	BUTTON_Y,		// Y
+	BUTTON_X,		// X
+	BUTTON_A,		// A
+	BUTTON_B,		// B
+	BUTTON_SR,		// SR
+	BUTTON_SL,		// SL
+	BUTTON_R,		// R
+	BUTTON_L,		// L
+	BUTTON_ZR,		// ZR
+	BUTTON_ZL,		// ZL
+	BUTTON_MINUS,	// マイナス
+	BUTTON_PLUS,	// プラス
+	BUTTON_STICK,	// スティック押し込み
+	BUTTON_CAPTURE,	// キャプチャ
+	BUTTON_HOME		// ホーム
+};
