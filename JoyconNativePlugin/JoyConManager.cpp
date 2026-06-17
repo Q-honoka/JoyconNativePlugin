@@ -14,7 +14,8 @@ constexpr int PRODUCT_JOYCON_R = 0x2007;	// Joy-Con(R)のプロダクトID（819
 JoyConManager::JoyConManager() :
 	joycons(),
 	updateThread(),
-	isRunning(false)
+	isRunning(false),
+	completeInit(false)
 { }
 
 /// <summary>
@@ -74,6 +75,8 @@ void JoyConManager::Initialize()
 	// スレッドを起動する
 	isRunning = true;
 	updateThread = std::thread(&JoyConManager::Update, this);
+
+	completeInit = true;
 }
 
 /// <summary>
@@ -102,15 +105,12 @@ void JoyConManager::Update()
 		for (auto& j : joycons)
 		{
 			if (!isRunning) break;
+			if (j->IsActive() == false) continue;	// 使用中のJoy-Conのみデータを取得する
 
 			j->Update();
 		}
 
-		// 下ボタンを押したらログを出す
-		if (IsButtonPressed(0, BUTTON_HOME))
-		{
-			printf("押した\n");
-		}
+		// コンソール上で確認したいことは以下に記入
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
@@ -172,12 +172,72 @@ bool JoyConManager::SetFullReportMode(hid_device* dev)
 }
 
 /// <summary>
+/// 初期化処理が終わっているか返す
+/// </summary>
+/// <returns>true：初期化が完了している, false：初期化が完了していない</returns>
+bool JoyConManager::CompleteInitialize() const
+{
+	return completeInit;
+}
+
+/// <summary>
+/// 未使用のJoy-Conを返す
+/// </summary>
+/// <returns>-1：エラー, 未使用のJoy-Conなし　それ以外の数値：そのJoy-Conの識別ID</returns>
+const int JoyConManager::AcquireJoyCon(bool isLeft)
+{
+	if (joycons.empty()) return -1;
+
+	// 未使用かつ指定されたJoy-Conタイプがあれば識別IDを渡す
+	for (int i = 0; i < joycons.size(); ++i)
+	{
+		if (!joycons[i]->IsActive() == false &&
+			joycons[i]->IsLeft() == isLeft)
+		{
+			joycons[i]->SetActive(true);
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+/// <summary>
+/// 使用中のJoy-Conを未使用にする
+/// </summary>
+/// <param name="id">識別ID</param>
+/// <returns>true：成功, false：失敗</returns>
+bool JoyConManager::ReleaseJoyCon(const int id)
+{
+	if (!IsValid(id)) return false;
+
+	joycons[id]->SetActive(false);
+
+	return true;
+}
+
+/// <summary>
+/// 有効なIDかどうかを返す
+/// </summary>
+/// <param name="id">識別ID</param>
+/// <returns>true：有効, false：無効</returns>
+bool JoyConManager::IsValid(const int id)
+{
+	return 0 <= id && 
+		id < joycons.size() && 
+		joycons[id]->IsActive();
+}
+
+/// <summary>
 /// 引数で指定されたJoy-Conのボタンが押されたか返す
 /// </summary>
-/// <param name="index">Joy-Conの番号</param>
+/// <param name="index">識別ID</param>
 /// <param name="kind">ボタンの種類</param>
-/// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool JoyConManager::IsButtonPressed(int index, ButtonKind kind)
+/// <returns>押されたかどうか(true：押された, false：押されていない, エラー)</returns>
+bool JoyConManager::IsButtonPressed(int id, ButtonKind kind)
 {
-	return JoyConUtility::IsButtonPressed(joycons[index]->GetJoyConRawInput(), kind, joycons[index]->IsLeft());
+	if (id < 0 || joycons.size() <= id) return false;
+	if (IsValid(id) == false) return false;
+
+	return JoyConUtility::IsButtonPressed(joycons[id]->GetJoyConRawInput(), kind, joycons[id]->IsLeft());
 }

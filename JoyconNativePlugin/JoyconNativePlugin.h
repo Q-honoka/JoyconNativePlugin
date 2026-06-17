@@ -11,12 +11,15 @@
 extern "C" JOYCONNATIVEPLUGIN_API int Add(
 	const int a, const int b);
 
-// 初期化処理
-extern "C" JOYCONNATIVEPLUGIN_API void JoyConInitialize();
 
 /*
 *	Joy-Conの接続・切断に関する処理関数
 */
+
+extern "C" JOYCONNATIVEPLUGIN_API void JoyConInitialize();			// すべてのJoy-Conを取得する関数
+
+extern "C" JOYCONNATIVEPLUGIN_API int ConnectJoyCon(bool isLeft);	// 使っていないJoy-Conを取得する関数
+extern "C" JOYCONNATIVEPLUGIN_API bool DisConnectJoyCon(const int id);	// 使用中のJoy-Conを未使用にする関数
 
 /*
 *	ボタンが押されたかの取得関数。18種類。
@@ -25,25 +28,25 @@ extern "C" JOYCONNATIVEPLUGIN_API void JoyConInitialize();
 *	押されていない場合もしくは、適切なコントローラーでない場合は false を返す
 */
 
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonDpadDown();		// 下
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonDpadUp();		// 上
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonDpadRight();		// 右
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonDpadLeft();		// 左
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonY();				// Y
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonX();				// X
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonB();				// B
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonA();				// A
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonSR();			// SR
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonSL();			// SL
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonR();				// R
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonL();				// L
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonZR();			// ZR
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonZL();			// ZL
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonMinus();			// マイナス
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonPlus();			// プラス
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonStick();			// スティック押し込み
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonCapture();		// キャプチャ
-extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonHome();			// ホーム
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonDpadDown(int id);	// 下
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonDpadUp(int id);		// 上
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonDpadRight(int id);	// 右
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonDpadLeft(int id);	// 左
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonY(int id);			// Y
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonX(int id);			// X
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonB(int id);			// B
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonA(int id);			// A
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonSR(int id);			// SR
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonSL(int id);			// SL
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonR(int id);			// R
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonL(int id);			// L
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonZR(int id);			// ZR
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonZL(int id);			// ZL
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonMinus(int id);		// マイナス
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonPlus(int id);		// プラス
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonStick(int id);		// スティック押し込み
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonCapture(int id);		// キャプチャ
+extern "C" JOYCONNATIVEPLUGIN_API bool IsButtonHome(int id);		// ホーム
 
 /*
 *	Joy-Conのアナログスティックデータを取得する関数

@@ -23,6 +23,8 @@ public:
 	~JoyConDevice();			// デストラクタ
 	bool Update();				// 入力データの更新
 	bool IsLeft() const;		// 左コントローラーかどうかを返す
+	bool IsActive() const;		// 使用中かどうかを返す
+	void SetActive(const bool state);	// 使用フラグを設定する
 
 	const JoyConRawInput& GetJoyConRawInput() const;	// Joy-Conの生データを返す
 
@@ -30,4 +32,5 @@ private:
 	JoyConRawInput rawInput;	// Joy-Conから取得した生データ
 	hid_device* handle;			// デバイスハンドル
 	bool isLeft = false;		// 左右フラグ（true：左, false：右）
+	bool isActive = false;		// Unity側で使用されているか
 };

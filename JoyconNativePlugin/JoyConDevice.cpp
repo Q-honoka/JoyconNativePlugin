@@ -8,7 +8,8 @@
 JoyConDevice::JoyConDevice(hid_device* hdl, bool isL) :
 	rawInput({0}),
 	handle(hdl),
-	isLeft(isL)
+	isLeft(isL),
+	isActive(false)
 {
 }
 
@@ -30,29 +31,32 @@ JoyConDevice::~JoyConDevice()
 /// <returns>true：成功, false：失敗</returns>
 bool JoyConDevice::Update()
 {
+	bool updated = false;
+
 	if (!handle)
 	{
-		return false;
+		return updated;
 	}
 
-	unsigned char buffer[64];  // 取得するデータのバッファサイズは64バイト
+	unsigned char buffer[64] = { 0 };  // 取得するデータのバッファサイズは64バイト
 
 	int result = hid_read(handle, buffer, sizeof(buffer));
 
 	// データサイズが0より大きいなら、データの処理を行う
 	if (0 < result)
 	{
-		if (buffer[0] == 0x30)
+		if (result == 64 && buffer[0] == 0x30)
 		{
 			// 最新データの格納
-			memcpy(rawInput.data, buffer, 64);
-			return true;
+			JoyConRawInput temp;
+			memcpy(temp.data, buffer, 64);
+			rawInput = temp;
+
+			updated = true;
 		}
-		return false;
 	}
 
-	return false;
-
+	return updated;
 }
 
 /// <summary>
@@ -65,6 +69,24 @@ bool JoyConDevice::IsLeft() const
 }
 
 /// <summary>
+/// Joy-Conが使用中かどうかを返す
+/// </summary>
+/// <returns>true：使用中, false：未使用</returns>
+bool JoyConDevice::IsActive() const
+{
+	return isActive;
+}
+
+/// <summary>
+/// Joy-Conの使用フラグを変更する
+/// </summary>
+/// <param name="state"></param>
+void JoyConDevice::SetActive(const bool state)
+{
+	isActive = state;
+}
+
+/// <summary>
 /// Joy-Conの最新の生データを返す
 /// </summary>
 /// <returns>Joy-Conの生データ構造体</returns>
@@ -72,3 +94,4 @@ const JoyConRawInput& JoyConDevice::GetJoyConRawInput() const
 {
 	return rawInput;
 }
+

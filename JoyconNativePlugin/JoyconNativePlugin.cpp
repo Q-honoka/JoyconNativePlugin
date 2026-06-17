@@ -19,172 +19,271 @@ void JoyConInitialize()
 }
 
 /// <summary>
+/// 未使用のJoy-Conを取得する関数
+/// </summary>
+/// <param name="isLeft">true：左Joy-Con, false：右Joy-Con</param>
+/// <returns>-1：エラー, それ以外：JoyConの識別ID</returns>
+int ConnectJoyCon(bool isLeft)
+{
+	if (JoyConManager::GetInstance().CompleteInitialize() == false) return -1;
+
+	// Joy-Conが取得できたかどうかを返す
+	return JoyConManager::GetInstance().AcquireJoyCon(isLeft);
+}
+
+/// <summary>
+/// 使用中のJoy-Conを未使用にする
+/// </summary>
+/// <param name="id">識別ID</param>
+/// <returns>true：成功, false：失敗</returns>
+bool DisConnectJoyCon(const int id)
+{
+	return JoyConManager::GetInstance().ReleaseJoyCon(id);
+}
+
+/// <summary>
 /// 下ボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonDpadDown()
+bool IsButtonDpadDown(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_DOWN);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_DOWN);
 }
 
 /// <summary>
 /// 上ボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonDpadUp()
+bool IsButtonDpadUp(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_UP);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_UP);
 }
 
 /// <summary>
 /// 右ボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonDpadRight()
+bool IsButtonDpadRight(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_RIGHT);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_RIGHT);
 }
 
 /// <summary>
 /// 左ボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonDpadLeft()
+bool IsButtonDpadLeft(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_LEFT);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_LEFT);
 }
 
 /// <summary>
 /// Yボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonY()
+bool IsButtonY(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_Y);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_Y);
 }
 
 /// <summary>
 /// Xボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonX()
+bool IsButtonX(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_X);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_X);
 }
 
 /// <summary>
 /// Bボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonB()
+bool IsButtonB(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_B);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_B);
 }
 
 /// <summary>
 /// Aボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonA()
+bool IsButtonA(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_A);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_A);
 }
 
 /// <summary>
 /// SRボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonSR()
+bool IsButtonSR(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_SR);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_SR);
 }
 
 /// <summary>
 /// SLボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonSL()
+bool IsButtonSL(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_SL);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_SL);
 }
 
 /// <summary>
 /// Rボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonR()
+bool IsButtonR(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_R);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_R);
 }
 
 /// <summary>
 /// Lボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonL()
+bool IsButtonL(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_L);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_L);
 }
 
 /// <summary>
 /// ZRボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonZR()
+bool IsButtonZR(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_ZR);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_ZR);
 }
 
 /// <summary>
 /// ZLボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonZL()
+bool IsButtonZL(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_ZL);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_ZL);
 }
 
 /// <summary>
 /// マイナスボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonMinus()
+bool IsButtonMinus(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_MINUS);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_MINUS);
 }
 
 /// <summary>
 /// プラスボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonPlus()
+bool IsButtonPlus(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_PLUS);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_PLUS);
 }
 
 /// <summary>
 /// スティックが押しこまれたか返す関数
 /// </summary>
 /// <returns>押しこまれたどうか(true：押された, false：押されていない)</returns>
-bool IsButtonStick()
+bool IsButtonStick(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_STICK);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_STICK);
 }
 
 /// <summary>
 /// キャプチャボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonCapture()
+bool IsButtonCapture(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_CAPTURE);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_CAPTURE);
 }
 
 /// <summary>
 /// ホームボタンが押されたか返す関数
 /// </summary>
 /// <returns>押されたかどうか(true：押された, false：押されていない)</returns>
-bool IsButtonHome()
+bool IsButtonHome(int id)
 {
-	return JoyConManager::GetInstance().IsButtonPressed(0, BUTTON_HOME);
+	auto& instance = JoyConManager::GetInstance();
+
+	if (!instance.IsValid(id)) return false;
+
+	return instance.IsButtonPressed(id, BUTTON_HOME);
 }

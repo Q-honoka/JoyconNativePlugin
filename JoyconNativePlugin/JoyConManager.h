@@ -28,6 +28,10 @@ public:
 	void Initialize();	// Joy-Conの列挙と、JoyConDeviceの生成を行う
 	void Finalize();	// すべてのJoy-Conを切断する
 
+	bool CompleteInitialize() const;	// 初期化処理が終わっているか返す
+	const int AcquireJoyCon(bool isLeft);		// 未使用のJoyConを返す
+	bool ReleaseJoyCon(const int id);			// 使用中のJoy-Conを未使用にする
+	bool IsValid(int id);						// 有効なidかどうかを返す
 	// Joy-Conのデータを渡す関数
 	bool IsButtonPressed(int index, ButtonKind kind);	// 引数で指定されたJoy-Conのボタンが押されたか返す
 
@@ -43,4 +47,5 @@ private:
 
 	std::thread updateThread;	// 更新スレッド
 	bool isRunning;			// 別スレッドが稼働中か（true：稼働中, false：稼働していない）
+	bool completeInit;		// 初期化が終わっているか（true：終わっている, false：終わっていない）
 };
