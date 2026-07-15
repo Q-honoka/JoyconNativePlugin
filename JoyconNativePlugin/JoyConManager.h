@@ -48,4 +48,5 @@ private:
 	std::thread updateThread;	// 更新スレッド
 	bool isRunning;			// 別スレッドが稼働中か（true：稼働中, false：稼働していない）
 	bool completeInit;		// 初期化が終わっているか（true：終わっている, false：終わっていない）
+	int waitSeconds;	// 接続待機時間（秒）
 };

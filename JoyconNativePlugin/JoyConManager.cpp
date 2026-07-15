@@ -15,8 +15,7 @@ JoyConManager::JoyConManager() :
 	joycons(),
 	updateThread(),
 	isRunning(false),
-	completeInit(false),
-	waitSeconds(20)
+	completeInit(false)
 { }
 
 /// <summary>
@@ -58,7 +57,6 @@ void JoyConManager::Initialize()
 				{
 					printf("サブコマンドの送信成功\n");
 					hid_set_nonblocking(dev, 1);
-					waitSeconds = 100;
 					joycons.emplace_back(std::make_unique<JoyConDevice>(dev, isLeft));
 				}
 				else
