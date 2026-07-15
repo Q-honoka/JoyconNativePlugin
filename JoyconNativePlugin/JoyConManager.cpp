@@ -15,7 +15,8 @@ JoyConManager::JoyConManager() :
 	joycons(),
 	updateThread(),
 	isRunning(false),
-	completeInit(false)
+	completeInit(false),
+	waitSeconds(20)
 { }
 
 /// <summary>
@@ -53,11 +54,11 @@ void JoyConManager::Initialize()
 			// 空でなければ、JoyConDeviceを生成して追加する
 			if (dev != nullptr)
 			{
-				hid_set_nonblocking(dev, 1);
-
 				if (SetFullReportMode(dev))
 				{
 					printf("サブコマンドの送信成功\n");
+					hid_set_nonblocking(dev, 1);
+					waitSeconds = 100;
 					joycons.emplace_back(std::make_unique<JoyConDevice>(dev, isLeft));
 				}
 				else
@@ -157,10 +158,27 @@ bool JoyConManager::SetFullReportMode(hid_device* dev)
 
 		// データを仮取得する
 		unsigned char readBuf[64] = { 0 };
-		hid_read(dev, readBuf, 64);
+		int readResult = hid_read_timeout(dev, readBuf, 32, 100);
+		//printf("サブコマンドの送信結果 %d, 受信結果 %d\n", result, readResult);
+
+		//for (int i = 0; i < 64; i++)
+		//{
+		//	printf("%02X ", readBuf[i]);
+		//}
+		//printf("\n");
 
 		// 応答があったらtrueを返す
-		if (0 < result && readBuf[0] == 0x21)
+		if (0 < result && 
+			readBuf[0] == 0x21 && 
+			readBuf[13] == 0x80 &&
+			readBuf[14] == 0x03)
+		{
+			return true;
+		}
+
+		if (0 < result &&
+			readResult > 0 &&
+			readBuf[0] == 0x30)
 		{
 			return true;
 		}
