@@ -73,7 +73,7 @@ void JoyConManager::Initialize()
 
 	// スレッドを起動する
 	isRunning = true;
-	//updateThread = std::thread(&JoyConManager::Update, this);
+	updateThread = std::thread(&JoyConManager::Update, this);
 
 	completeInit = true;
 }
