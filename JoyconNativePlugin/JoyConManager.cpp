@@ -157,13 +157,6 @@ bool JoyConManager::SetFullReportMode(hid_device* dev)
 		// データを仮取得する
 		unsigned char readBuf[64] = { 0 };
 		int readResult = hid_read_timeout(dev, readBuf, 32, 100);
-		//printf("サブコマンドの送信結果 %d, 受信結果 %d\n", result, readResult);
-
-		//for (int i = 0; i < 64; i++)
-		//{
-		//	printf("%02X ", readBuf[i]);
-		//}
-		//printf("\n");
 
 		// 応答があったらtrueを返す
 		if (0 < result && 
@@ -207,7 +200,7 @@ const int JoyConManager::AcquireJoyCon(bool isLeft)
 	// 未使用かつ指定されたJoy-Conタイプがあれば識別IDを渡す
 	for (int i = 0; i < joycons.size(); ++i)
 	{
-		if (!joycons[i]->IsActive() == false &&
+		if (!joycons[i]->IsActive()&&
 			joycons[i]->IsLeft() == isLeft)
 		{
 			joycons[i]->SetActive(true);
