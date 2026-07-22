@@ -6,6 +6,7 @@
 /// <param name="hdl">デバイスハンドル</param>
 /// <param name="isL">左Joy-Conかどうか</param>
 JoyConDevice::JoyConDevice(hid_device* hdl, bool isL) :
+	mtx(),
 	rawInput({0}),
 	handle(hdl),
 	isLeft(isL),
@@ -47,6 +48,8 @@ bool JoyConDevice::Update()
 	{
 		if (result == 64 && buffer[0] == 0x30)
 		{
+			// データの書き込み中は他が触れないようにする
+			std::lock_guard<std::mutex> lock(mtx);
 			// 最新データの格納
 			JoyConRawInput temp;
 			memcpy(temp.data, buffer, 64);
@@ -74,6 +77,8 @@ bool JoyConDevice::IsLeft() const
 /// <returns>true：使用中, false：未使用</returns>
 bool JoyConDevice::IsActive() const
 {
+	std::lock_guard<std::mutex> lock(mtx);
+
 	return isActive;
 }
 
@@ -83,6 +88,8 @@ bool JoyConDevice::IsActive() const
 /// <param name="state"></param>
 void JoyConDevice::SetActive(const bool state)
 {
+	std::lock_guard<std::mutex> lock(mtx);
+
 	isActive = state;
 }
 
@@ -90,8 +97,10 @@ void JoyConDevice::SetActive(const bool state)
 /// Joy-Conの最新の生データを返す
 /// </summary>
 /// <returns>Joy-Conの生データ構造体</returns>
-const JoyConRawInput& JoyConDevice::GetJoyConRawInput() const
+const JoyConRawInput JoyConDevice::GetJoyConRawInput() const
 {
+	std::lock_guard<std::mutex> lock(mtx);
+
 	return rawInput;
 }
 

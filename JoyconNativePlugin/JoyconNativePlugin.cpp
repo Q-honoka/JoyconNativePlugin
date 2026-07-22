@@ -19,6 +19,14 @@ void JoyConInitialize()
 }
 
 /// <summary>
+/// Joy-Conの終了処理
+/// </summary>
+void JoyConFinalize()
+{
+	JoyConManager::GetInstance().Finalize();
+}
+
+/// <summary>
 /// 未使用のJoy-Conを取得する関数
 /// </summary>
 /// <param name="isLeft">true：左Joy-Con, false：右Joy-Con</param>

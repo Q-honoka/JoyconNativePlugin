@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "hidapi.h"
 #include "JoyConTypes.h"
+#include <mutex>
 
 /*
 	役割
@@ -26,9 +27,10 @@ public:
 	bool IsActive() const;		// 使用中かどうかを返す
 	void SetActive(const bool state);	// 使用フラグを設定する
 
-	const JoyConRawInput& GetJoyConRawInput() const;	// Joy-Conの生データを返す
+	const JoyConRawInput GetJoyConRawInput() const;	// Joy-Conの生データを返す
 
 private:
+	mutable std::mutex mtx;				// 競合回避のためのミューテックス
 	JoyConRawInput rawInput;	// Joy-Conから取得した生データ
 	hid_device* handle;			// デバイスハンドル
 	bool isLeft = false;		// 左右フラグ（true：左, false：右）

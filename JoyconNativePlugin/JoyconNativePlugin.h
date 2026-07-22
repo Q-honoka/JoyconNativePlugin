@@ -17,6 +17,7 @@ extern "C" JOYCONNATIVEPLUGIN_API int Add(
 */
 
 extern "C" JOYCONNATIVEPLUGIN_API void JoyConInitialize();			// すべてのJoy-Conを取得する関数
+extern "C" JOYCONNATIVEPLUGIN_API void JoyConFinalize();			// すべてのJoy-Conの接続を解放する関数
 
 extern "C" JOYCONNATIVEPLUGIN_API int ConnectJoyCon(bool isLeft);	// 使っていないJoy-Conを取得する関数
 extern "C" JOYCONNATIVEPLUGIN_API bool DisConnectJoyCon(const int id);	// 使用中のJoy-Conを未使用にする関数
