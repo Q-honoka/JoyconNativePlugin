@@ -114,6 +114,71 @@ bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawDefaultInputData& i
 }
 
 /// <summary>
+/// コントローラーの最新データを取得する（フルモード）
+/// </summary>
+/// <param name="id">取得したいデバイスのID</param>
+/// <param name="inputData">取得したデータの格納先の参照</param>
+/// <returns>取得できたか</returns>
+bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawFullInputData& inputData)
+{
+	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
+
+	// 受け取ったデータサイズが0より大きいなら処理を続ける
+	if (hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE) > 0)
+	{
+		// データが正しく受け取ることができていない場合は、falseを返す
+		if (buf[0] != 0x30 && buf[0] != 0x21) return false;
+		
+		// 生データを分けて格納する
+		inputData.inputReportID = buf[0];
+		inputData.timer = buf[1];
+		
+		inputData.battery = (buf[2] & 0xF0);
+		inputData.connection = (buf[2] & 0x0F);
+		
+		inputData.rightButton = buf[3];
+		inputData.sharedButton = buf[4];
+		inputData.leftButton = buf[5];
+
+		inputData.leftStickHorizontal = buf[6] | ((buf[7] & 0xF0) << 8);
+		inputData.leftStickVertical = (buf[7] >> 4) | (buf[8] << 4);
+
+		inputData.rightStickHorizontal = buf[9] | ((buf[10] & 0xF0) << 8);
+		inputData.rightStickVertical = (buf[10] >> 4) | (buf[11] << 4);
+
+		inputData.rumble = buf[12];
+
+		inputData.accelX = buf[13] | (buf[14] << 8);
+		inputData.accelY = buf[15] | (buf[16] << 8);
+		inputData.accelZ = buf[17] | (buf[18] << 8);
+
+		inputData.gyro1 = buf[19] | (buf[20] << 8);
+		inputData.gyro2 = buf[21] | (buf[22] << 8);
+		inputData.gyro3 = buf[23] | (buf[24] << 8);
+
+		inputData.prevAccelX = buf[25] | (buf[26] << 8);
+		inputData.prevAccelY = buf[27] | (buf[28] << 8);
+		inputData.prevAccelZ = buf[29] | (buf[30] << 8);
+
+		inputData.prevGyro1 = buf[31] | (buf[32] << 8);
+		inputData.prevGyro2 = buf[33] | (buf[34] << 8);
+		inputData.prevGyro3 = buf[35] | (buf[36] << 8);
+
+		inputData.priorAccelX = buf[37] | (buf[38] << 8);
+		inputData.priorAccelY = buf[39] | (buf[40] << 8);
+		inputData.priorAccelZ = buf[41] | (buf[42] << 8);
+
+		inputData.priorGyro1 = buf[43] | (buf[44] << 8);
+		inputData.priorGyro2 = buf[45] | (buf[46] << 8);
+		inputData.priorGyro3 = buf[47] | (buf[48] << 8);
+
+		return true;
+	}
+
+	return false;
+}
+
+/// <summary>
 /// デバイスID生成して返す
 /// </summary>
 /// <returns>デバイスID</returns>

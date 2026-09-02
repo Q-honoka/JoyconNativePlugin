@@ -48,7 +48,7 @@ struct JoyConRawDefaultInputData
 };
 
 // 取得した生データ（フルモード）
-struct RawFullInputData
+struct JoyConRawFullInputData
 {
 	uint8_t inputReportID;	// 入力レポートID
 	uint8_t timer;			// タイマー
