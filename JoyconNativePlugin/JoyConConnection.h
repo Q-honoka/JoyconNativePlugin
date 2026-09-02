@@ -33,7 +33,7 @@ public:
 	DeviceInfo ConnectionController();	// コントローラーと接続する
 	DeviceInfo ConnectionController(ControllerType type);		// コントローラーと接続する（左右を指定）
 	void DisconnectionController(DeviceID id);		// コントローラーの切断処理
-	bool SetFullReportMode(DeviceID id);	// 入力レポートをフルモードにする
+	bool SetFullReportMode(DeviceID id);	// フルレポートモードのサブコマンドを送信する
 	bool GetRawInputData(DeviceID id, JoyConRawDefaultInputData& inputData);	// コントローラーの最新データを取得する（デフォルトモード+Joy-Con）
 	bool GetRawInputData(DeviceID id, RawFullInputData& inputData);				// コントローラーの最新データを取得する（フルモード）
 	bool GetRawStickCalibrationData(DeviceID id, RawStickCalibrationData& calibrationData);	// スティックの校正値を取得する
@@ -43,9 +43,15 @@ public:
 	// 振動データを送信する
 
 private:
+	struct ControllerInfo
+	{
+		hid_device* handle;		// デバイスハンドル
+		std::string path;		// パス
+		uint8_t packetNumber;	// パケット番号
+	};
 	std::atomic<DeviceID> nextDeviceID;		// デバイスID
 	bool successInit;	// 初期化に成功したか
-	std::unordered_map<DeviceID, hid_device*> devices;		// 接続しているデバイス
+	std::unordered_map<DeviceID, ControllerInfo> devices;		// 接続しているデバイス
 	std::unordered_set<std::string> devicePaths;			// 接続しているデバイスのパス
 
 	DeviceID CreateDeviceID();		// デバイスIDの作成

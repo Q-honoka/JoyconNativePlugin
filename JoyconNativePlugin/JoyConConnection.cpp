@@ -4,6 +4,10 @@ constexpr int VENDOR_NINTENDO = 0x057E;		// 任天堂のベンダーID
 constexpr int PRODUCT_JOYCON_L = 0x2006;	// Joy-Con(L)のプロダクトID
 constexpr int PRODUCT_JOYCON_R = 0x2007;	// Joy-Con(R)のプロダクトID
 
+constexpr int DEFAULT_BUF_SIZE = 0x40;		// 標準データサイズ
+
+constexpr int SUBCOMMAND_DATA_FULLREPORT = 0x30;	// フルレポートモードのサブコマンドデータ
+
 /// <summary>
 /// コンストラクタ
 /// </summary>
@@ -52,7 +56,33 @@ DeviceInfo JoyConConnection::ConnectionController(ControllerType type)
 /// <param name="id">切断したいコントローラーのデバイスID</param>
 void JoyConConnection::DisconnectionController(DeviceID id)
 {
-	hid_close(devices[id]);
+	hid_close(devices[id].handle);
+}
+
+/// <summary>
+/// フルレポートモードのサブコマンドを送信する
+/// </summary>
+/// <param name="id">フルモードにするデバイスのデバイスID</param>
+/// <returns>成功したかどうか</returns>
+bool JoyConConnection::SetFullReportMode(DeviceID id)
+{
+	// 送信するデータ
+	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
+
+	buf[0] = 0x01;
+	buf[1] = devices[id].packetNumber;
+	buf[10] = 0x03;		// 入力レポート
+	buf[11] = SUBCOMMAND_DATA_FULLREPORT;		// フルレポートモード
+
+	// サブコマンドを送信できたかどうかを返す
+	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) >= 0)
+	{
+		// パケット番号を更新する
+		devices[id].packetNumber = (devices[id].packetNumber + 1) & 0x0F;
+		return true;
+	}
+
+	return false;
 }
 
 /// <summary>
@@ -150,7 +180,13 @@ DeviceInfo JoyConConnection::ConnectionControllerImpl(std::optional<ControllerTy
 
 			// ハンドルとパスの登録
 			DeviceID id = CreateDeviceID();
-			devices.emplace(id, handle);
+			ControllerInfo info = 
+			{ 
+				handle, 
+				device->path, 
+				0 
+			};
+			devices.emplace(id, info);
 			devicePaths.insert(std::string(device->path));
 			// デバイス情報を作成して返す
 			return
