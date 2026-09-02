@@ -1,6 +1,9 @@
 #pragma once
 
 #include <unordered_map>
+#include <unordered_set>
+#include <atomic>
+#include <string>
 #include "hidapi.h"
 #include "JoyConTypes.h"
 
@@ -18,11 +21,15 @@
 * 	
 */
 
+// デバイスIDの型
+using DeviceID = uint32_t;
+
 class JoyConConnection
 {
 public:
 	JoyConConnection();	// コンストラクタ
-	DeviceInfo ConnectionController();	// コントローラーと接続する
+	DeviceInfo ConnectionJoyCon();	// コントローラーと接続する
+	DeviceInfo ConnectionJoyCon(bool isLeft);		// コントローラーと接続する（左右を指定）
 	void DisconnectionController(uint32_t id);		// コントローラーの切断処理
 	bool SetFullReportMode(uint32_t id);	// 入力レポートをフルモードにする
 	bool GetRawInputData(uint32_t id, JoyConRawDefaultInputData& inputData);	// コントローラーの最新データを取得する（デフォルトモード+Joy-Con）
@@ -34,6 +41,10 @@ public:
 	// 振動データを送信する
 
 private:
+	std::atomic<DeviceID> nextDeviceID;		// デバイスID
 	bool successInit;	// 初期化に成功したか
-	std::unordered_map<uint32_t, hid_device*> devices;		// 接続しているデバイス
+	std::unordered_map<DeviceID, hid_device*> devices;		// 接続しているデバイス
+	std::unordered_set<std::string> devicePaths;			// 接続しているデバイスのパス
+
+	DeviceID CreateDeviceID();		// デバイスIDの作成
 };
