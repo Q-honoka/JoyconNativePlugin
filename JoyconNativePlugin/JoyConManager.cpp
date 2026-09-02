@@ -111,6 +111,7 @@ void JoyConManager::Update()
 		}
 
 		// コンソール上で確認したいことは以下に記入
+		
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
@@ -160,8 +161,8 @@ bool JoyConManager::SetFullReportMode(hid_device* dev)
 		int readResult = hid_read_timeout(dev, readBuf, 32, 100);
 
 		// 応答があったらtrueを返す
-		if (0 < result && 
-			readBuf[0] == 0x21 && 
+		if (0 < result &&
+			readBuf[0] == 0x21 &&
 			readBuf[13] == 0x80 &&
 			readBuf[14] == 0x03)
 		{
@@ -201,7 +202,7 @@ const int JoyConManager::AcquireJoyCon(bool isLeft)
 	// 未使用かつ指定されたJoy-Conタイプがあれば識別IDを渡す
 	for (int i = 0; i < joycons.size(); ++i)
 	{
-		if (!joycons[i]->IsActive()&&
+		if (!joycons[i]->IsActive() &&
 			joycons[i]->IsLeft() == isLeft)
 		{
 			joycons[i]->SetActive(true);
@@ -233,8 +234,8 @@ bool JoyConManager::ReleaseJoyCon(const int id)
 /// <returns>true：有効, false：無効</returns>
 bool JoyConManager::IsValid(const int id)
 {
-	return 0 <= id && 
-		id < joycons.size() && 
+	return 0 <= id &&
+		id < joycons.size() &&
 		joycons[id]->IsActive();
 }
 

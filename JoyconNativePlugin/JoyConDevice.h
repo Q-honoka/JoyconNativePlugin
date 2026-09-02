@@ -30,7 +30,7 @@ public:
 	const JoyConRawInput GetJoyConRawInput() const;	// Joy-Conの生データを返す
 
 private:
-	mutable std::mutex mtx;				// 競合回避のためのミューテックス
+	mutable std::mutex mtx;		// 競合回避のためのミューテックス
 	JoyConRawInput rawInput;	// Joy-Conから取得した生データ
 	hid_device* handle;			// デバイスハンドル
 	bool isLeft = false;		// 左右フラグ（true：左, false：右）
