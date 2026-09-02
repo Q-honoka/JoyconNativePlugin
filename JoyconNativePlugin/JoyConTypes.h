@@ -103,7 +103,10 @@ struct RawStickCalibrationData
 // 6軸モーションの校正値
 struct Raw6AxisCalibrationData
 {
-	// サイズは不明...
+	std::array<int16_t, 3> accelOffset;			// 加速度のオフセット(X,Y,Zの順)
+	std::array<int16_t, 3> accelSensitivity;	// 加速度の感度係数
+	std::array<int16_t, 3> gyroOffset;			// ジャイロのオフセット(X,Y,Zの順)
+	std::array<int16_t, 3> gyroSensitivity;		// ジャイロの感度係数
 };
 
 // 振動に必要なデータ
