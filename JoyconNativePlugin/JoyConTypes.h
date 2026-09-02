@@ -68,36 +68,36 @@ struct JoyConRawFullInputData
 
 	uint8_t rumble;		// 振動データ
 
-	uint16_t accelX;	// 加速度X
-	uint16_t accelY;	// 加速度Y
-	uint16_t accelZ;	// 加速度Z
+	int16_t accelX;	// 加速度X
+	int16_t accelY;	// 加速度Y
+	int16_t accelZ;	// 加速度Z
 
-	uint16_t gyro1;		// ジャイロ1
-	uint16_t gyro2;		// ジャイロ2
-	uint16_t gyro3;		// ジャイロ3
+	int16_t gyro1;		// ジャイロ1
+	int16_t gyro2;		// ジャイロ2
+	int16_t gyro3;		// ジャイロ3
 
-	uint16_t prevAccelX;	// １つ前の加速度X
-	uint16_t prevAccelY;	// １つ前の加速度Y
-	uint16_t prevAccelZ;	// １つ前の加速度Z
+	int16_t prevAccelX;	// １つ前の加速度X
+	int16_t prevAccelY;	// １つ前の加速度Y
+	int16_t prevAccelZ;	// １つ前の加速度Z
 
-	uint16_t prevGyro1;		// １つ前のジャイロ1
-	uint16_t prevGyro2;		// １つ前のジャイロ2
-	uint16_t prevGyro3;		// １つ前のジャイロ3
+	int16_t prevGyro1;		// １つ前のジャイロ1
+	int16_t prevGyro2;		// １つ前のジャイロ2
+	int16_t prevGyro3;		// １つ前のジャイロ3
 
-	uint16_t priorAccelX;	// ２つ前の加速度X
-	uint16_t priorAccelY;	// ２つ前の加速度Y
-	uint16_t priorAccelZ;	// ２つ前の加速度Z
+	int16_t priorAccelX;	// ２つ前の加速度X
+	int16_t priorAccelY;	// ２つ前の加速度Y
+	int16_t priorAccelZ;	// ２つ前の加速度Z
 
-	uint16_t priorGyro1;	// ２つ前のジャイロ1
-	uint16_t priorGyro2;	// ２つ前のジャイロ2
-	uint16_t priorGyro3;	// ２つ前のジャイロ3
+	int16_t priorGyro1;	// ２つ前のジャイロ1
+	int16_t priorGyro2;	// ２つ前のジャイロ2
+	int16_t priorGyro3;	// ２つ前のジャイロ3
 };
 
 // アナログスティックの校正値
 struct RawStickCalibrationData
 {
-	std::array<uint8_t, 9> leftStickValue;	// 左スティックの校正値
-	std::array<uint8_t, 9> rightStickValue;	// 右スティックの校正値
+	std::array<uint16_t, 6> leftStickValue;		// 左スティックの校正値
+	std::array<uint16_t, 6> rightStickValue;	// 右スティックの校正値
 };
 
 // 6軸モーションの校正値

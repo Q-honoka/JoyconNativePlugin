@@ -179,6 +179,61 @@ bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawFullInputData& inpu
 }
 
 /// <summary>
+/// スティックの校正値を取得する
+/// </summary>
+/// <param name="id">取得したいデバイスのID</param>
+/// <param name="calibrationData">校正値の格納先の参照</param>
+/// <returns>取得できたか</returns>
+bool JoyConConnection::GetRawStickCalibrationData(DeviceID id, RawStickCalibrationData& calibrationData)
+{
+	// 送信するデータ
+	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
+
+	// 左スティック
+	buf[0] = 0x01;
+	buf[1] = devices[id].packetNumber;
+	buf[10] = 0x10;		// SPI読み取り
+	// 読み取り開始位置アドレス x603D
+	buf[11] = 0x3D;
+	buf[12] = 0x60;
+	buf[13] = 0x00;
+	buf[14] = 0x00;
+	// 読み取るサイズ
+	buf[15] = 18;
+
+	// 送信結果が0未満なら、取得失敗
+	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) < 0) 
+		return false;
+
+	// 読み取ったデータが0より大きいなら処理を続ける
+	if (hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE) > 0)
+	{
+		// 応答がなければ取得失敗
+		if (buf[0] != 0x21) return false;
+
+		// 左スティックの校正値
+		calibrationData.leftStickValue[0] = (buf[20] << 8) & 0xF00 | buf[19];
+		calibrationData.leftStickValue[1] = (buf[21] << 4) | (buf[20] >> 4);
+		calibrationData.leftStickValue[2] = (buf[23] << 8) & 0xF00 | buf[22];
+		calibrationData.leftStickValue[3] = (buf[24] << 4) | (buf[23] >> 4);
+		calibrationData.leftStickValue[4] = (buf[26] << 8) & 0xF00 | buf[25];
+		calibrationData.leftStickValue[5] = (buf[27] << 4) | (buf[26] >> 4);
+
+		// 右スティックの校正値
+		calibrationData.rightStickValue[0] = (buf[29] << 8) & 0xF00 | buf[28];
+		calibrationData.rightStickValue[1] = (buf[30] << 4) | (buf[29] >> 4);
+		calibrationData.rightStickValue[2] = (buf[32] << 8) & 0xF00 | buf[31];
+		calibrationData.rightStickValue[3] = (buf[33] << 4) | (buf[32] >> 4);
+		calibrationData.rightStickValue[4] = (buf[35] << 8) & 0xF00 | buf[34];
+		calibrationData.rightStickValue[5] = (buf[36] << 4) | (buf[35] >> 4);
+
+		return true;
+	}
+
+	return false;
+}
+
+/// <summary>
 /// デバイスID生成して返す
 /// </summary>
 /// <returns>デバイスID</returns>
