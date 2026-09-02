@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <unordered_map>
 #include <unordered_set>
@@ -28,8 +28,8 @@ class JoyConConnection
 {
 public:
 	JoyConConnection();	// コンストラクタ
-	DeviceInfo ConnectionJoyCon();	// コントローラーと接続する
-	DeviceInfo ConnectionJoyCon(bool isLeft);		// コントローラーと接続する（左右を指定）
+	DeviceInfo ConnectionController();	// コントローラーと接続する
+	DeviceInfo ConnectionController(ControllerType type);		// コントローラーと接続する（左右を指定）
 	void DisconnectionController(uint32_t id);		// コントローラーの切断処理
 	bool SetFullReportMode(uint32_t id);	// 入力レポートをフルモードにする
 	bool GetRawInputData(uint32_t id, JoyConRawDefaultInputData& inputData);	// コントローラーの最新データを取得する（デフォルトモード+Joy-Con）

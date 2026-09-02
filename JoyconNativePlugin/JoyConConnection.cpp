@@ -22,10 +22,10 @@ JoyConConnection::JoyConConnection() :
 }
 
 /// <summary>
-/// JoyConと接続する
+/// コントローラーと接続する
 /// </summary>
 /// <returns>デバイス情報</returns>
-DeviceInfo JoyConConnection::ConnectionJoyCon()
+DeviceInfo JoyConConnection::ConnectionController()
 {
 	DeviceInfo info = {
 		0,
@@ -39,7 +39,7 @@ DeviceInfo JoyConConnection::ConnectionJoyCon()
 
 	// デバイスハンドル
 	hid_device* handle = nullptr;
-	bool isConnect = true;
+	bool isConnect = false;
 
 	// すべてのデバイスを捜査する
 	while (device)
@@ -57,13 +57,10 @@ DeviceInfo JoyConConnection::ConnectionJoyCon()
 				device->serial_number
 			);
 
-			// ハンドルがない場合は、接続失敗
-			if (!handle)
-			{
-				isConnect = false;
-			}
+			// ハンドルがあれば接続成功
+			if (handle) isConnect = true;
 
-			// Joy-Conの左右を設定する
+			// コントローラーの種類を設定する
 			switch (device->product_id)
 			{
 			case PRODUCT_JOYCON_L:
@@ -73,17 +70,77 @@ DeviceInfo JoyConConnection::ConnectionJoyCon()
 				info.type = ControllerType::JOYCON_RIGHT;
 				break;
 			default:
-				// 存在しないタイプの場合は接続失敗とする
+				// 存在しない種類なら接続失敗とする
 				isConnect = false;
 				break;
 			}
+
 		}
 	}
 
-	// ハンドルがない場合は、接続失敗
-	if (!handle)
+	// 接続が成功していたら生成IDを作成する
+	if (isConnect)
 	{
-		isConnect = false;
+		info.deviceID = CreateDeviceID();
+	}
+	info.isConnected = isConnect;
+
+	return info;
+}
+
+/// <summary>
+/// 指定したコントローラーと接続する
+/// </summary>
+/// <param name="type">コントローラーの種類</param>
+/// <returns>デバイス情報</returns>
+DeviceInfo JoyConConnection::ConnectionController(ControllerType type)
+{
+	DeviceInfo info = {
+	0,
+	type,
+	false
+	};
+
+	// 接続されているすべてのHIDデバイスを取得
+	hid_device_info* devInfo = hid_enumerate(0, 0);
+	hid_device_info* device = devInfo;
+
+	// デバイスハンドル
+	hid_device* handle = nullptr;
+	bool isConnect = false;
+	int deviceType;
+
+	// 指定された種類のプロダクトIDを設定
+	switch (type)
+	{
+	case ControllerType::JOYCON_LEFT:
+		deviceType = PRODUCT_JOYCON_L;
+		break;
+	case ControllerType::JOYCON_RIGHT:
+		deviceType = PRODUCT_JOYCON_R;
+		break;
+	}
+
+	// すべてのデバイスを捜査する
+	while (device)
+	{
+		// JoyConのみ調べる
+		if (device->vendor_id == VENDOR_NINTENDO)
+		{
+			// 開いたことのあるデバイスは開かない
+			if (devicePaths.contains(device->path)) continue;
+
+			if (device->product_id != deviceType) continue;
+
+			// デバイスを開く
+			handle = hid_open(
+				device->vendor_id,
+				device->product_id,
+				device->serial_number
+			);
+
+			if (handle) isConnect = true;
+		}
 	}
 
 	// 接続が成功していたら生成IDを作成する
