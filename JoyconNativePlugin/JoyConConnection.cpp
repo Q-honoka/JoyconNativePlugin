@@ -86,6 +86,34 @@ bool JoyConConnection::SetFullReportMode(DeviceID id)
 }
 
 /// <summary>
+/// コントローラーの最新データを取得する（デフォルトモード+Joy-Con）
+/// </summary>
+/// <param name="id">取得したいデバイスのID</param>
+/// <param name="inputData">取得したデータの格納先の参照</param>
+/// <returns>取得できたか</returns>
+bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawDefaultInputData& inputData)
+{
+	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
+
+	// 受け取ったデータサイズが0より大きいなら処理を続ける
+	if (hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE) > 0)
+	{
+		// データが正しく受け取ることができていない場合は、falseを返す
+		if (buf[0] != 0x3F) return false;
+
+		// 生データを分けて格納する
+		inputData.inputReportID = buf[0];
+		inputData.buttonState[0] = buf[1];
+		inputData.buttonState[1] = buf[2];
+		inputData.stickHat = buf[3];
+
+		return true;
+	}
+
+	return false;
+}
+
+/// <summary>
 /// デバイスID生成して返す
 /// </summary>
 /// <returns>デバイスID</returns>
