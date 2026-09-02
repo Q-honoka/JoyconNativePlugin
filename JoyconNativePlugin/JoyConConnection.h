@@ -29,14 +29,15 @@ class JoyConConnection
 {
 public:
 	JoyConConnection();	// コンストラクタ
+	~JoyConConnection();	// デストラクタ
 	DeviceInfo ConnectionController();	// コントローラーと接続する
 	DeviceInfo ConnectionController(ControllerType type);		// コントローラーと接続する（左右を指定）
-	void DisconnectionController(uint32_t id);		// コントローラーの切断処理
-	bool SetFullReportMode(uint32_t id);	// 入力レポートをフルモードにする
-	bool GetRawInputData(uint32_t id, JoyConRawDefaultInputData& inputData);	// コントローラーの最新データを取得する（デフォルトモード+Joy-Con）
-	bool GetRawInputData(uint32_t id, RawFullInputData& inputData);				// コントローラーの最新データを取得する（フルモード）
-	bool GetRawStickCalibrationData(uint32_t id, RawStickCalibrationData& calibrationData);	// スティックの校正値を取得する
-	bool GetRaw6AxisCalibrationData(uint32_t id, Raw6AxisCalibrationData& calibrationData);	// 6軸モーションの校正値を取得する
+	void DisconnectionController(DeviceID id);		// コントローラーの切断処理
+	bool SetFullReportMode(DeviceID id);	// 入力レポートをフルモードにする
+	bool GetRawInputData(DeviceID id, JoyConRawDefaultInputData& inputData);	// コントローラーの最新データを取得する（デフォルトモード+Joy-Con）
+	bool GetRawInputData(DeviceID id, RawFullInputData& inputData);				// コントローラーの最新データを取得する（フルモード）
+	bool GetRawStickCalibrationData(DeviceID id, RawStickCalibrationData& calibrationData);	// スティックの校正値を取得する
+	bool GetRaw6AxisCalibrationData(DeviceID id, Raw6AxisCalibrationData& calibrationData);	// 6軸モーションの校正値を取得する
 	bool SuccessInit() const;		// HIDAPIの初期化に成功したか
 	// 振動を有効にする
 	// 振動データを送信する

@@ -17,6 +17,15 @@ JoyConConnection::JoyConConnection() :
 }
 
 /// <summary>
+/// デストラクタ
+/// </summary>
+JoyConConnection::~JoyConConnection()
+{
+	// HIDAPIを終了する
+	hid_exit();
+}
+
+/// <summary>
 /// コントローラーと接続する
 /// </summary>
 /// <returns>デバイス情報</returns>
@@ -35,6 +44,15 @@ DeviceInfo JoyConConnection::ConnectionController(ControllerType type)
 {
 	// コントローラーの種類を指定して接続する
 	return ConnectionControllerImpl(type);
+}
+
+/// <summary>
+/// コントローラーとの接続を切断する
+/// </summary>
+/// <param name="id">切断したいコントローラーのデバイスID</param>
+void JoyConConnection::DisconnectionController(DeviceID id)
+{
+	hid_close(devices[id]);
 }
 
 /// <summary>
