@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <unordered_set>
+#include <optional>
 #include <atomic>
 #include <string>
 #include "hidapi.h"
@@ -47,4 +48,7 @@ private:
 	std::unordered_set<std::string> devicePaths;			// 接続しているデバイスのパス
 
 	DeviceID CreateDeviceID();		// デバイスIDの作成
+	int GetProductID(ControllerType type);		// プロダクトIDを取得する
+	ControllerType GetControllerType(int productID);	// コントローラーの種類を取得する
+	DeviceInfo ConnectionControllerImpl(std::optional<ControllerType> requestType);	// コントローラーと接続する内部関数
 };
