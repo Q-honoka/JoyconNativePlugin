@@ -234,6 +234,55 @@ bool JoyConConnection::GetRawStickCalibrationData(DeviceID id, RawStickCalibrati
 }
 
 /// <summary>
+/// 6軸モーションの校正値を取得する
+/// </summary>
+/// <param name="id">取得したいデバイスのID</param>
+/// <param name="calibrationData">校正値の格納先の参照</param>
+/// <returns>取得できたか</returns>
+bool JoyConConnection::GetRaw6AxisCalibrationData(DeviceID id, Raw6AxisCalibrationData& calibrationData)
+{
+	// 送信するデータ
+	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
+
+	// 左スティック
+	buf[0] = 0x01;
+	buf[1] = devices[id].packetNumber;
+	buf[10] = 0x10;		// SPI読み取り
+	// 読み取り開始位置アドレス x6020
+	buf[11] = 0x20;
+	buf[12] = 0x60;
+	buf[13] = 0x00;
+	buf[14] = 0x00;
+	// 読み取るサイズ
+	buf[15] = 24;
+
+	// 送信結果が0未満なら、取得失敗
+	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) < 0)
+		return false;
+
+	// 読み取ったデータが0より大きいなら処理を続ける
+	if (hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE) > 0)
+	{
+		// 応答がなければ取得失敗
+		if (buf[0] != 0x21) return false;
+
+
+		return true;
+	}
+
+	return false;
+}
+
+/// <summary>
+/// HIDAPIの初期化に成功したかどうかを返す
+/// </summary>
+/// <returns>成功：true</returns>
+bool JoyConConnection::SuccessInit() const
+{
+	return successInit;
+}
+
+/// <summary>
 /// デバイスID生成して返す
 /// </summary>
 /// <returns>デバイスID</returns>
