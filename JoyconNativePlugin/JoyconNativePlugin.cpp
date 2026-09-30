@@ -43,21 +43,3 @@ void JoyConDisConnect(uint32_t id)
 {
 	return JoyConManager::GetInstance().DisConnect(id);
 }
-
-/// <summary>
-/// Joy-Conのデータ取得処理（デフォルト）
-/// </summary>
-/// <param name="data">取得したデータの格納先</param>
-void JoyConGetRawData(uint32_t id, JoyConRawDefaultInputData* data)
-{
-	*data = JoyConManager::GetInstance().GetRawData(id);
-}
-
-/// <summary>
-/// Joy-Conのデータ取得処理（フルモード）
-/// </summary>
-/// <param name="data">取得したデータの格納先</param>
-void JoyConGetRawDataFull(uint32_t id, JoyConRawFullInputData* data)
-{
-	*data = JoyConManager::GetInstance().GetRawDataFull(id);
-}

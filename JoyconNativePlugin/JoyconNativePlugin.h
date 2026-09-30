@@ -31,6 +31,3 @@ extern "C" JOYCONNATIVEPLUGIN_API void JoyConDisConnect(uint32_t id);		// Joy-Co
 /*
 *	Joy-Conのデータ取得に関する処理関数
 */
-
-extern "C" JOYCONNATIVEPLUGIN_API void JoyConGetRawData(uint32_t id, JoyConRawDefaultInputData* data);		// Joy-Conのデータを取得する関数（デフォルトデータ）
-extern "C" JOYCONNATIVEPLUGIN_API void JoyConGetRawDataFull(uint32_t id, JoyConRawFullInputData* data);		// Joy-Conのデータを取得する関数（フルモードデータ）

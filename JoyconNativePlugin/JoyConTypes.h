@@ -14,57 +14,6 @@ enum class ControllerType
 	JOYCON_RIGHT,	// 右Joy-Con
 };
 
-// スティックの傾き方向を表す列挙子
-// （SL, SYNC, SRが上になるように横向きで持った時の方向）
-enum class StickDirection
-{
-	DIR_UP,			// 上
-	DIR_UPRIGHT1,	// 右上
-	DIR_RIGHT,		// 右
-	DIR_DOWNRIGHT,	// 右下
-	DIR_DOWN,		// 下
-	DIR_DOWNLEFT,	// 左下
-	DIR_LEFT,		// 左
-	DIR_UPLEFT,		// 左上
-	DIR_CENTER,		// 中央
-};
-
-// バッテリー状態
-enum class BatteryState
-{
-	BATTERY_EMPTY,		// バッテリー切れ
-	BATTERY_CRITICAL,	// バッテリー切れ寸前
-	BATTERY_LOW,		// バッテリー低い
-	BATTERY_MEDIUM,		// バッテリー中程度
-	BATTERY_FULL,		// バッテリー満タン
-	BATTERY_CHARGING,	// バッテリー充電中
-};
-
-// 加工後のデータ（デフォルト）
-struct ConvertInputData
-{
-	bool buttonState[14];		// 各ボタンの状態
-	StickDirection stickDir;	// スティックの傾き方向
-};
-
-// 加工後のデータ（フルモード）
-struct ConvertInputDataFull
-{
-	int timer;		// タイマー
-
-	BatteryState batteryState;	// バッテリーの状態
-
-	bool buttonState[23];		// ボタンの状態
-
-	float leftStickHorizontal;	// 左スティックの垂直方向の傾き
-	float leftStickVertical;	// 左スティックの水平方向の傾き
-	float rightStickHorizontal;	// 右スティックの垂直方向の傾き
-	float rightStickVertical;	// 右スティックの水平方向の傾き
-
-	float gyro[3];	// ジャイロ
-	float accel[3];	// 加速度
-};
-
 // デバイスの情報
 struct DeviceInfo
 {

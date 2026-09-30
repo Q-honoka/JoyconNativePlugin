@@ -97,30 +97,6 @@ void JoyConManager::DisConnect(uint32_t id)
 }
 
 /// <summary>
-/// Joy-Conから取得したデータを返す（デフォルト）
-/// </summary>
-/// <param name="id">取得したいJoy-ConのデバイスID</param>
-/// <returns>取得したデータ</returns>
-JoyConRawDefaultInputData JoyConManager::GetRawData(uint32_t id)
-{
-	JoyConRawDefaultInputData data;
-	joyconConnection.GetRawInputData(id, data);
-	return data;
-}
-
-/// <summary>
-/// Joy-Conから取得したデータを返す（フルモード）
-/// </summary>
-/// <param name="id">取得したいJoy-ConのデバイスID</param>
-/// <returns>取得したデータ</returns>
-JoyConRawFullInputData JoyConManager::GetRawDataFull(uint32_t id)
-{
-	JoyConRawFullInputData data;
-	joyconConnection.GetRawInputData(id, data);
-	return data;
-}
-
-/// <summary>
 /// すべてのJoy-Conの入力データを更新する
 /// </summary>
 void JoyConManager::Update()
