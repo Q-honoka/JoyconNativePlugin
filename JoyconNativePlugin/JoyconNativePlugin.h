@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "JoyConTypes.h"
 #include <atomic>
 
 #ifdef JOYCONNATIVEPLUGIN_EXPORTS
@@ -26,3 +27,10 @@ extern "C" JOYCONNATIVEPLUGIN_API void JoyConFinalize();		// Joy-Conプラグイ
 
 extern "C" JOYCONNATIVEPLUGIN_API uint32_t JoyConConnected();	// Joy-Conと接続し、取得する関数
 extern "C" JOYCONNATIVEPLUGIN_API void JoyConDisConnect(uint32_t id);		// Joy-Conと接続を解除する関数
+
+/*
+*	Joy-Conのデータ取得に関する処理関数
+*/
+
+extern "C" JOYCONNATIVEPLUGIN_API void JoyConGetRawData(uint32_t id, JoyConRawDefaultInputData* data);		// Joy-Conのデータを取得する関数（デフォルトデータ）
+extern "C" JOYCONNATIVEPLUGIN_API void JoyConGetRawDataFull(uint32_t id, JoyConRawFullInputData* data);		// Joy-Conのデータを取得する関数（フルモードデータ）

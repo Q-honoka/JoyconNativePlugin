@@ -28,6 +28,8 @@ public:
 	void Finalize();	// プラグインの終了処理を行う
 	uint32_t Connected();	// Joy-Conと接続する
 	void DisConnect(uint32_t id);		// Joy-Conとの接続を解除する
+	JoyConRawDefaultInputData GetRawData(uint32_t id);		// Joy-Conからデータを取得する（デフォルト）
+	JoyConRawFullInputData GetRawDataFull(uint32_t id);		// Joy-Conからデータを取得する（フルモード）
 
 	// Joy-Conのデータを渡す関数
 
