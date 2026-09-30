@@ -9,7 +9,8 @@
 	複数台のJoy-Conを管理する
 
 	責務
-	・
+	・プラグインの使用開始/終了処理
+	・JoyConの使用開始/終了指示
 
 	情報
 	・JoyConDevice配列
@@ -23,8 +24,10 @@ class JoyConManager
 {
 public:
 	static JoyConManager& GetInstance();	// インスタンスを渡す
-	bool Initialize();	// Joy-Conの列挙と、JoyConDeviceの生成を行う
-	void Finalize();	// すべてのJoy-Conを切断する
+	bool Initialize();	// プラグインの開始処理を行う
+	void Finalize();	// プラグインの終了処理を行う
+	uint32_t Connected();	// Joy-Conと接続する
+	void DisConnect(uint32_t id);		// Joy-Conとの接続を解除する
 
 	// Joy-Conのデータを渡す関数
 

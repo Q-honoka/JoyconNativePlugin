@@ -25,3 +25,21 @@ void JoyConFinalize()
 {
 	JoyConManager::GetInstance().Finalize();
 }
+
+/// <summary>
+/// Joy-Conの接続処理
+/// </summary>
+/// <returns>Joy-ConのデバイスID</returns>
+uint32_t JoyConConnected()
+{
+	return JoyConManager::GetInstance().Connected();
+}
+
+/// <summary>
+/// Joy-Conの接続解除処理
+/// </summary>
+/// <param name="id">接続を解除したいJoy-ConのデバイスID</param>
+void JoyConDisConnect(uint32_t id)
+{
+	return JoyConManager::GetInstance().DisConnect(id);
+}

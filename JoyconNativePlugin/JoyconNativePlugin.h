@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <atomic>
 
 #ifdef JOYCONNATIVEPLUGIN_EXPORTS
 #define JOYCONNATIVEPLUGIN_API __declspec(dllexport)
@@ -13,8 +14,15 @@ extern "C" JOYCONNATIVEPLUGIN_API int Add(
 
 
 /*
-*	Joy-Conの接続・切断に関する処理関数
+*	プラグインの接続・切断に関する処理関数
 */
 
 extern "C" JOYCONNATIVEPLUGIN_API bool JoyConInitialize();		// Joy-Conプラグインを使用可能にする関数
 extern "C" JOYCONNATIVEPLUGIN_API void JoyConFinalize();		// Joy-Conプラグインの使用を終了する関数
+
+/*
+*	Joy-Conの接続・切断に関する処理関数
+*/
+
+extern "C" JOYCONNATIVEPLUGIN_API uint32_t JoyConConnected();	// Joy-Conと接続し、取得する関数
+extern "C" JOYCONNATIVEPLUGIN_API void JoyConDisConnect(uint32_t id);		// Joy-Conと接続を解除する関数

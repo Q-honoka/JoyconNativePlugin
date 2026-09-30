@@ -1,9 +1,6 @@
 ﻿#include "JoyConManager.h"
 
-constexpr int VENDOR_NINTENDO = 0x057E;		// 任天堂のベンダーID（1406）
-
-constexpr int PRODUCT_JOYCON_L = 0x2006;	// Joy-Con(L)のプロダクトID（8198）
-constexpr int PRODUCT_JOYCON_R = 0x2007;	// Joy-Con(R)のプロダクトID（8199）
+constexpr uint32_t ERROR_VALUE = 0xFFFFFFFF;
 
 /// <summary>
 /// コンストラクタ
@@ -13,7 +10,8 @@ JoyConManager::JoyConManager() :
 	joyconConnection(),
 	updateThread(),
 	isRunning(false)
-{ }
+{
+}
 
 /// <summary>
 /// インスタンスの参照を返す
@@ -26,7 +24,7 @@ JoyConManager& JoyConManager::GetInstance()
 }
 
 /// <summary>
-/// Joy-Conの列挙と接続、JoyConDeviceの生成を行う
+/// プラグインの開始処理を行う
 /// </summary>
 bool JoyConManager::Initialize()
 {
@@ -43,7 +41,7 @@ bool JoyConManager::Initialize()
 }
 
 /// <summary>
-/// すべてのJoy-Conを切断する
+/// プラグインの終了処理を行う
 /// </summary>
 void JoyConManager::Finalize()
 {
@@ -57,6 +55,45 @@ void JoyConManager::Finalize()
 
 	// 配列を空にする（デストラクタで接続解除している）
 	joycons.clear();
+}
+
+/// <summary>
+/// Joy-Conとの接続を開始する
+/// </summary>
+/// <returns>Joy-ConのデバイスID</returns>
+uint32_t JoyConManager::Connected()
+{
+	// 1台のJoy-Conと接続して、情報を取得
+	DeviceInfo info = joyconConnection.ConnectionController();
+
+	// 取得に成功したら、デバイスタイプに応じた登録をする
+	if (info.isConnected)
+	{
+		bool isL = false;
+		switch (info.type)
+		{
+			case ControllerType::JOYCON_LEFT:
+				isL = true;
+				break;
+			case ControllerType::JOYCON_RIGHT:
+			default:
+				break;
+		}
+
+		joycons.emplace_back(info.deviceID, isL);
+		return info.deviceID;
+	}
+
+	return ERROR_VALUE;
+}
+
+/// <summary>
+/// Joy-Conとの接続を解除する
+/// </summary>
+/// <param name="id">切断を解除したいJoy-ConのデバイスID</param>
+void JoyConManager::DisConnect(uint32_t id)
+{
+	joyconConnection.DisconnectionController(id);
 }
 
 /// <summary>
@@ -75,7 +112,7 @@ void JoyConManager::Update()
 		}
 
 		// コンソール上で確認したいことは以下に記入
-		
+
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
