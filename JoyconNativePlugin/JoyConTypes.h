@@ -109,8 +109,18 @@ struct Raw6AxisCalibrationData
 	std::array<int16_t, 3> gyroSensitivity;		// ジャイロの感度係数
 };
 
-// 振動に必要なデータ
-struct VibrationData
+// 振動に必要な数値情報
+struct RumbleParameter
 {
+	float highBandFrequency;		// 高周波帯域の下位周波数
+	float highBandAmplitude;		// 高周波帯域の振幅
 
+	float lowBandFrequency;			// 低周波帯域の周波数
+	float lowBandAmplitude;			// 低周波帯域の振幅
+};
+
+// エンコード後の振動データ
+struct EncodedRumbleData
+{
+	uint8_t data[4];
 };

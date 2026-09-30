@@ -39,8 +39,8 @@ public:
 	bool GetRawStickCalibrationData(DeviceID id, RawStickCalibrationData& calibrationData);	// スティックの校正値を取得する
 	bool GetRaw6AxisCalibrationData(DeviceID id, Raw6AxisCalibrationData& calibrationData);	// 6軸モーションの校正値を取得する
 	bool SuccessInit() const;		// HIDAPIの初期化に成功したか
-	// 振動を有効にする
-	// 振動データを送信する
+	bool EnableVibration(DeviceID id);			// 振動を有効にする
+	bool SendRumble(DeviceID id, RumbleParameter param, ControllerType type);	// 振動データを送信する
 
 private:
 	struct ControllerInfo
@@ -58,4 +58,5 @@ private:
 	int GetProductID(ControllerType type);		// プロダクトIDを取得する
 	ControllerType GetControllerType(int productID);	// コントローラーの種類を取得する
 	DeviceInfo ConnectionControllerImpl(std::optional<ControllerType> requestType);	// コントローラーと接続する内部関数
+	EncodedRumbleData Encode(RumbleParameter param);	// 振動情報をエンコードする
 };

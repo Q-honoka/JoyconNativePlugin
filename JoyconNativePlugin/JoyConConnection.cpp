@@ -8,6 +8,10 @@ constexpr int DEFAULT_BUF_SIZE = 0x40;		// 標準データサイズ
 
 constexpr int SUBCOMMAND_DATA_FULLREPORT = 0x30;	// フルレポートモードのサブコマンドデータ
 
+constexpr int RUMBLE_BUF_SIZE = 4;			// 振動データのサイズ
+constexpr int LEFT_RUMBLE_START_IDX = 2;	// 左Joy-Conの振動データの先頭インデックス
+constexpr int RIGHT_RUMBLE_START_IDX = 6;	// 右Joy-Conの振動データの先頭インデックス
+
 /// <summary>
 /// コンストラクタ
 /// </summary>
@@ -189,7 +193,6 @@ bool JoyConConnection::GetRawStickCalibrationData(DeviceID id, RawStickCalibrati
 	// 送信するデータ
 	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
 
-	// 左スティック
 	buf[0] = 0x01;
 	buf[1] = devices[id].packetNumber;
 	buf[10] = 0x10;		// SPI読み取り
@@ -227,6 +230,8 @@ bool JoyConConnection::GetRawStickCalibrationData(DeviceID id, RawStickCalibrati
 		calibrationData.rightStickValue[4] = (buf[35] << 8) & 0xF00 | buf[34];
 		calibrationData.rightStickValue[5] = (buf[36] << 4) | (buf[35] >> 4);
 
+		// パケット番号を更新する
+		devices[id].packetNumber = (devices[id].packetNumber + 1) & 0x0F;
 		return true;
 	}
 
@@ -244,7 +249,6 @@ bool JoyConConnection::GetRaw6AxisCalibrationData(DeviceID id, Raw6AxisCalibrati
 	// 送信するデータ
 	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
 
-	// 左スティック
 	buf[0] = 0x01;
 	buf[1] = devices[id].packetNumber;
 	buf[10] = 0x10;		// SPI読み取り
@@ -266,7 +270,8 @@ bool JoyConConnection::GetRaw6AxisCalibrationData(DeviceID id, Raw6AxisCalibrati
 		// 応答がなければ取得失敗
 		if (buf[0] != 0x21) return false;
 
-
+		// パケット番号を更新する
+		devices[id].packetNumber = (devices[id].packetNumber + 1) & 0x0F;
 		return true;
 	}
 
@@ -280,6 +285,78 @@ bool JoyConConnection::GetRaw6AxisCalibrationData(DeviceID id, Raw6AxisCalibrati
 bool JoyConConnection::SuccessInit() const
 {
 	return successInit;
+}
+
+/// <summary>
+/// 振動機能を有効化する
+/// </summary>
+/// <param name="id">有効化するデバイスのハンドル</param>
+/// <returns>実行結果</returns>
+bool JoyConConnection::EnableVibration(DeviceID id)
+{
+	// 送信するデータ
+	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
+
+	buf[0] = 0x01;
+	buf[1] = devices[id].packetNumber;
+	buf[10] = 0x48;		// 振動機能
+	buf[11] = 0x01;		// 有効化する
+
+	// サブコマンドの送信結果を返す
+	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) >= 0)
+	{
+		// パケット番号を更新する
+		devices[id].packetNumber = (devices[id].packetNumber + 1) & 0x0F;
+		return true;
+	}
+
+	return false;
+}
+
+/// <summary>
+/// 振動データを送信する
+/// </summary>
+/// <param name="id">振動させるデバイスのハンドル</param>
+/// <param name="param">振動データ</param>
+/// <returns>実行結果</returns>
+bool JoyConConnection::SendRumble(DeviceID id, RumbleParameter param, ControllerType type)
+{
+	// 渡されたデータをエンコードする
+	EncodedRumbleData encodedData = Encode(param);
+
+	// 送信するデータ
+	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
+
+	buf[0] = 0x01;
+	buf[1] = devices[id].packetNumber;
+	
+	// Joy-Conのタイプごとに適切な場所にデータを入れる
+	if (type == ControllerType::JOYCON_LEFT)
+	{
+		// 振動データを4バイト分コピーする
+		for (int i = 0; i < RUMBLE_BUF_SIZE; i++)
+		{
+			buf[LEFT_RUMBLE_START_IDX + i] = encodedData.data[i];
+		}
+	}
+	else if (type == ControllerType::JOYCON_RIGHT)
+	{
+		// 振動データを4バイト分コピーする
+		for (int i = 0; i < RUMBLE_BUF_SIZE; i++)
+		{
+			buf[RIGHT_RUMBLE_START_IDX + i] = encodedData.data[i];
+		}
+	}
+
+	// サブコマンドの送信結果を返す
+	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) >= 0)
+	{
+		// パケット番号を更新する
+		devices[id].packetNumber = (devices[id].packetNumber + 1) & 0x0F;
+		return true;
+	}
+
+	return false;
 }
 
 /// <summary>
@@ -404,4 +481,47 @@ DeviceInfo JoyConConnection::ConnectionControllerImpl(std::optional<ControllerTy
 		ControllerType::JOYCON_LEFT,
 		false
 	};
+}
+
+/// <summary>
+/// 振動の情報をエンコードしてJoy-Conが理解できるデータにする
+/// </summary>
+/// <param name="param">振動情報</param>
+/// <returns>エンコードしたデータ</returns>
+EncodedRumbleData JoyConConnection::Encode(RumbleParameter param)
+{
+	uint16_t highFrequency;		// 高周波帯域の周波数
+	uint8_t highAmplitude;		// 高周波帯域の振幅
+	uint16_t lowFrequency;		// 低周波帯域の周波数
+	uint8_t lowAmplitude;		// 低周波帯域の振幅
+
+	// 周波数を変換
+	float hf = param.highBandFrequency;
+	if (hf < 0.0f)
+		hf = 0.0f;
+	else if (hf > 1252.0f)
+		hf = 1252.0f;
+	uint8_t encodedHexFreq = (uint8_t)round(log2((double)hf / 10.0f) * 32.0f);
+
+	highFrequency = (encodedHexFreq - 0x60) * 4;
+	lowFrequency = encodedHexFreq - 0x40;
+
+	// 振幅を変換
+	float amp = param.highBandAmplitude;
+	uint8_t encodedHexAmp = 0;
+	if (amp > 0.23f)
+		encodedHexAmp = (uint8_t)round(log2f(amp * 8.7f) * 32.f);
+	else if (amp > 0.12f)
+		encodedHexAmp = (uint8_t)round(log2f(amp * 17.f) * 16.f);
+	
+	highAmplitude = encodedHexAmp * 2;
+	lowAmplitude = encodedHexAmp / 2 + 64;
+
+	EncodedRumbleData rumbleData;
+	rumbleData.data[0] = highFrequency & 0xFF;
+	rumbleData.data[1] = highAmplitude + ((highFrequency >> 8) & 0xFF);
+	rumbleData.data[2] = lowFrequency + ((lowAmplitude >> 8) & 0xFF);
+	rumbleData.data[3] = lowAmplitude & 0xFF;
+
+	return rumbleData;
 }
