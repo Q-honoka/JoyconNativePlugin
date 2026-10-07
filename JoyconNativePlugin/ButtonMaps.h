@@ -11,7 +11,7 @@ struct ButtonMap
 };
 
 // デフォルトモードのボタン対応表（コントローラータイプ：左）
-ButtonMap defaultModeLeftMaps[] =
+ButtonMap defaultModeLeftMaps[14] =
 {
 	{0, 0x01, ButtonType::BUTTON_DOWN},
 	{0, 0x02, ButtonType::BUTTON_RIGHT},
@@ -31,7 +31,7 @@ ButtonMap defaultModeLeftMaps[] =
 };
 
 // デフォルトモードのボタン対応表（コントローラータイプ：右）
-ButtonMap defaultModeRightMaps[] =
+ButtonMap defaultModeRightMaps[14] =
 {
 	{0, 0x01, ButtonType::BUTTON_B},
 	{0, 0x02, ButtonType::BUTTON_A},
@@ -51,7 +51,7 @@ ButtonMap defaultModeRightMaps[] =
 };
 
 // フルモードのボタン対応表
-ButtonMap fullModeMaps[] =
+ButtonMap fullModeMaps[22] =
 {
 	{0, 0x01, ButtonType::BUTTON_Y},
 	{0, 0x02, ButtonType::BUTTON_X},
