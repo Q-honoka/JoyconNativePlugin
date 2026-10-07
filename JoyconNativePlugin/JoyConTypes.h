@@ -24,6 +24,31 @@ enum class DeviceInputMode
 	MODE_FULL,		// フル
 };
 
+// ボタンの種類を表す列挙子
+enum class ButtonType
+{
+	BUTTON_A,		// Aボタン
+	BUTTON_B,		// Bボタン
+	BUTTON_X,		// Xボタン
+	BUTTON_Y,		// Yボタン
+	BUTTON_SR,		// SRボタン
+	BUTTON_SL,		// SLボタン
+	BUTTON_R,		// Rボタン
+	BUTTON_ZR,		// ZRボタン
+	BUTTON_MINUS,	// マイナスボタン
+	BUTTON_PLUS,	// プラスボタン
+	BUTTON_R_STICK,	// Rスティックボタン
+	BUTTON_L_STICK, // Lスティックボタン
+	BUTTON_HOME,	// HOMEボタン
+	BUTTON_CAPTURE,	// CAPTUREボタン
+	BUTTON_DOWN,	// 下ボタン（縦持ち）
+	BUTTON_UP,		// 上ボタン（縦持ち）
+	BUTTON_RIGHT,	// 右ボタン（縦持ち）
+	BUTTON_LEFT,	// 左ボタン（縦持ち）
+	BUTTON_L,		// Lボタン
+	BUTTON_ZL,		// ZLボタン
+};
+
 // デバイスの情報
 struct DeviceInfo
 {
@@ -50,9 +75,7 @@ struct JoyConRawFullInputData
 	uint8_t battery;		// バッテリー状態
 	uint8_t connection;		// 接続状態
 
-	uint8_t rightButton;	// 右ボタンデータ
-	uint8_t sharedButton;	// 共通ボタンデータ
-	uint8_t leftButton;		// 左ボタンデータ
+	std::array<uint8_t, 3> buttonState;	// ボタンデータ
 
 	uint16_t leftStickHorizontal;	// 左スティックの上下データ
 	uint16_t leftStickVertical;		// 左スティックの左右データ

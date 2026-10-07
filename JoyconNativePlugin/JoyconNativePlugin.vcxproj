@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ButtonMaps.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="JoyConConnection.h" />
     <ClInclude Include="JoyConDevice.h" />

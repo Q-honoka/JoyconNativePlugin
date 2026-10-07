@@ -92,7 +92,8 @@ JoyConRawDefaultInputData JoyConDevice::ParseDefaultData(const unsigned char* bu
 	std::lock_guard<std::mutex> lock(mtx);
 
 	data.inputReportID = buffer[0];
-	std::copy(buffer + 1, buffer + 2, data.buttonState);
+	data.buttonState[0] = buffer[1];
+	data.buttonState[1] = buffer[2];
 	data.stickHat = buffer[3];
 
 	return data;
@@ -115,9 +116,9 @@ JoyConRawFullInputData JoyConDevice::ParseFullData(const unsigned char* buffer)
 	data.battery = buffer[2] & 0xF0;
 	data.connection = buffer[2] & 0x0F;
 
-	data.rightButton = buffer[3];
-	data.sharedButton = buffer[4];
-	data.leftButton = buffer[5];
+	data.buttonState[0] = buffer[3];
+	data.buttonState[1] = buffer[4];
+	data.buttonState[2] = buffer[5];
 
 	data.leftStickHorizontal = buffer[6] | ((buffer[7] & 0xF) << 8);
 	data.leftStickVertical = (buffer[7] >> 4) | (buffer[8] << 4);
