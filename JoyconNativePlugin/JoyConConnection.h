@@ -22,9 +22,6 @@
 * 	
 */
 
-// デバイスIDの型
-using DeviceID = uint32_t;
-
 class JoyConConnection
 {
 public:

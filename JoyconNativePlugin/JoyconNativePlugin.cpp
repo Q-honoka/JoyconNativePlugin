@@ -30,7 +30,7 @@ void JoyConFinalize()
 /// Joy-Conの接続処理
 /// </summary>
 /// <returns>Joy-ConのデバイスID</returns>
-uint32_t JoyConConnected()
+DeviceID JoyConConnected()
 {
 	return JoyConManager::GetInstance().Connected();
 }
@@ -39,7 +39,7 @@ uint32_t JoyConConnected()
 /// Joy-Conの接続解除処理
 /// </summary>
 /// <param name="id">接続を解除したいJoy-ConのデバイスID</param>
-void JoyConDisConnect(uint32_t id)
+void JoyConDisConnect(DeviceID id)
 {
 	return JoyConManager::GetInstance().DisConnect(id);
 }

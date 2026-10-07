@@ -61,7 +61,7 @@ void JoyConManager::Finalize()
 /// Joy-Conとの接続を開始する
 /// </summary>
 /// <returns>Joy-ConのデバイスID</returns>
-uint32_t JoyConManager::Connected()
+DeviceID JoyConManager::Connected()
 {
 	// 1台のJoy-Conと接続して、情報を取得
 	DeviceInfo info = joyconConnection.ConnectionController();
@@ -69,18 +69,7 @@ uint32_t JoyConManager::Connected()
 	// 取得に成功したら、デバイスタイプに応じた登録をする
 	if (info.isConnected)
 	{
-		bool isL = false;
-		switch (info.type)
-		{
-			case ControllerType::JOYCON_LEFT:
-				isL = true;
-				break;
-			case ControllerType::JOYCON_RIGHT:
-			default:
-				break;
-		}
-
-		joycons.emplace_back(info.deviceID, isL);
+		joycons.emplace_back(info.deviceID, info.type);
 		return info.deviceID;
 	}
 
@@ -91,7 +80,7 @@ uint32_t JoyConManager::Connected()
 /// Joy-Conとの接続を解除する
 /// </summary>
 /// <param name="id">切断を解除したいJoy-ConのデバイスID</param>
-void JoyConManager::DisConnect(uint32_t id)
+void JoyConManager::DisConnect(DeviceID id)
 {
 	joyconConnection.DisconnectionController(id);
 }
@@ -106,7 +95,6 @@ void JoyConManager::Update()
 		for (auto& j : joycons)
 		{
 			if (!isRunning) break;
-			if (j->IsActive() == false) continue;	// 使用中のJoy-Conのみデータを取得する
 
 			j->Update();
 		}

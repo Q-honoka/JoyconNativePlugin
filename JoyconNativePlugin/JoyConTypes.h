@@ -7,6 +7,9 @@
 #include <cstdint>
 #include <array>
 
+// デバイスのIDを表す型
+using DeviceID = uint32_t;
+
 // コントローラーの種類を表す列挙子
 enum class ControllerType
 {
@@ -14,10 +17,17 @@ enum class ControllerType
 	JOYCON_RIGHT,	// 右Joy-Con
 };
 
+// デバイスの入力レポートモードを表す列挙子
+enum class DeviceInputMode
+{
+	MODE_DEFAULT,	// デフォルト
+	MODE_FULL,		// フル
+};
+
 // デバイスの情報
 struct DeviceInfo
 {
-	uint32_t deviceID;		// そのデバイスのID
+	DeviceID deviceID;		// そのデバイスのID
 	ControllerType type;	// コントローラーの種類
 	bool isConnected;		// 接続できたか
 };
