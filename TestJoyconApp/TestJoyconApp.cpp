@@ -7,10 +7,15 @@
 
 int main()
 {
-    JoyConInitialize();
+    if (JoyConInitialize() == false)
+    {
+        std::cout << "初期化失敗。プログラム終了" << std::endl;
+        return 1;
+    }
 
     DeviceID id;
     id = JoyConConnected();
+
     if (id == 0xFFFFFFFF)
     {
         std::cout << "接続失敗。プログラム終了" << std::endl;
