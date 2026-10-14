@@ -24,7 +24,8 @@ enum class BatteryState
 	BATTERY_MEDIUM,		// 並
 	BATTERY_LOW,		// 低い
 	BATTERY_CRITICAL,	// 切れそう
-	BATTERY_EMPTY		// 空
+	BATTERY_EMPTY,		// 空
+	BATTERY_ERROR		// エラー
 };
 
 // ボタンの種類を表す列挙子
