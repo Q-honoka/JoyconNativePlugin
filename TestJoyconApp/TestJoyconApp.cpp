@@ -2,17 +2,28 @@
 //
 
 #include <iostream>
-#include "JoyConManager.h"
+#include "JoyconNativePlugin.h"
 
 
 int main()
 {
-    JoyConManager::GetInstance().Initialize();
+    JoyConInitialize();
+
+    DeviceID id;
+    id = JoyConConnected();
+    if (id == 0xFFFFFFFF)
+    {
+        std::cout << "接続失敗。プログラム終了" << std::endl;
+        JoyConFinalize();
+        return 1;
+    }
+    std::cout << "接続成功。" << std::endl;
 
     std::cout << "Press Enter to exit...\n";
     std::cin.get();
 
-    JoyConManager::GetInstance().Finalize();
+    JoyConDisConnect(id);
+    JoyConFinalize();
 
     return 0;
 }

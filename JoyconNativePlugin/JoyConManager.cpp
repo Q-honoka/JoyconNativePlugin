@@ -69,7 +69,7 @@ DeviceID JoyConManager::Connected()
 	// 取得に成功したら、デバイスタイプに応じた登録をする
 	if (info.isConnected)
 	{
-		joycons.emplace_back(info.deviceID, info.type);
+		joycons.emplace_back(std::make_unique<JoyConDevice>(info.deviceID, info.type));
 		return info.deviceID;
 	}
 
@@ -98,9 +98,6 @@ void JoyConManager::Update()
 
 			j->Update();
 		}
-
-		// コンソール上で確認したいことは以下に記入
-
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}

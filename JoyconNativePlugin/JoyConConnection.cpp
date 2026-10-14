@@ -140,9 +140,9 @@ bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawFullInputData& inpu
 		inputData.battery = (buf[2] & 0xF0);
 		inputData.connection = (buf[2] & 0x0F);
 		
-		inputData.rightButton = buf[3];
-		inputData.sharedButton = buf[4];
-		inputData.leftButton = buf[5];
+		inputData.buttonState[0] = buf[3];
+		inputData.buttonState[1] = buf[4];
+		inputData.buttonState[2] = buf[5];
 
 		inputData.leftStickHorizontal = buf[6] | ((buf[7] & 0xF0) << 8);
 		inputData.leftStickVertical = (buf[7] >> 4) | (buf[8] << 4);

@@ -142,14 +142,18 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\JoyconNativePlugin\JoyConConnection.cpp" />
     <ClCompile Include="..\JoyconNativePlugin\JoyConDevice.cpp" />
     <ClCompile Include="..\JoyconNativePlugin\JoyConManager.cpp" />
+    <ClCompile Include="..\JoyconNativePlugin\JoyconNativePlugin.cpp" />
     <ClCompile Include="..\JoyconNativePlugin\pch.cpp" />
     <ClCompile Include="TestJoyconApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\JoyconNativePlugin\JoyConConnection.h" />
     <ClInclude Include="..\JoyconNativePlugin\JoyConDevice.h" />
     <ClInclude Include="..\JoyconNativePlugin\JoyConManager.h" />
+    <ClInclude Include="..\JoyconNativePlugin\JoyconNativePlugin.h" />
     <ClInclude Include="..\JoyconNativePlugin\JoyConTypes.h" />
     <ClInclude Include="..\JoyconNativePlugin\JoyConUtility.h" />
     <ClInclude Include="..\JoyconNativePlugin\pch.h" />

@@ -29,8 +29,6 @@ public:
 	DeviceID Connected();	// Joy-Conと接続する
 	void DisConnect(DeviceID id);		// Joy-Conとの接続を解除する
 
-	// Joy-Conのデータを渡す関数
-
 	// コピーガード
 	JoyConManager(const JoyConManager& other) = delete;
 	JoyConManager& operator=(const JoyConManager& other) = delete;
