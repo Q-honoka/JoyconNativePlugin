@@ -32,7 +32,6 @@ public:
 	DeviceInfo ConnectionController(ControllerType type);		// コントローラーと接続する（左右を指定）
 	void DisconnectionController(DeviceID id);		// コントローラーの切断処理
 	bool SetFullReportMode(DeviceID id);	// フルレポートモードのサブコマンドを送信する
-	bool GetRawInputData(DeviceID id, JoyConRawDefaultInputData& inputData);	// コントローラーの最新データを取得する（デフォルトモード+Joy-Con）
 	bool GetRawInputData(DeviceID id, JoyConRawFullInputData& inputData);		// コントローラーの最新データを取得する（フルモード）
 	bool GetRawStickCalibrationData(DeviceID id, RawStickCalibrationData& calibrationData);	// スティックの校正値を取得する
 	bool GetRaw6AxisCalibrationData(DeviceID id, Raw6AxisCalibrationData& calibrationData);	// 6軸モーションの校正値を取得する

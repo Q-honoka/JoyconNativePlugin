@@ -24,7 +24,6 @@ int main()
     }
     std::cout << "接続成功。" << std::endl;
 
-    std::cout << "Press Enter to exit...\n";
     std::cin.get();
 
     JoyConDisConnect(id);

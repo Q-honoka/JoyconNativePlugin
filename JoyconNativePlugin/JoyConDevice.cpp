@@ -8,21 +8,8 @@
 JoyConDevice::JoyConDevice(DeviceID id, ControllerType t) :
 	ID(id),
 	type(t),
-	mode(DeviceInputMode::MODE_DEFAULT),
-	defaultData(),
 	fullData()
 { }
-
-/// <summary>
-/// データを更新する(デフォルト)
-/// </summary>
-/// <param name="data">生データ</param>
-void JoyConDevice::UpdateData(const JoyConRawDefaultInputData data)
-{
-	defaultData = data;
-
-	// TODO:生データを加工する
-}
 
 /// <summary>
 /// データを更新する(フル)
@@ -42,13 +29,4 @@ void JoyConDevice::UpdateData(const JoyConRawFullInputData data)
 DeviceID JoyConDevice::GetID() const
 {
 	return ID;
-}
-
-/// <summary>
-/// デバイスの入力レポートの種類を返す
-/// </summary>
-/// <returns>入力レポートモード</returns>
-DeviceInputMode JoyConDevice::GetInputMode() const
-{
-	return mode;
 }

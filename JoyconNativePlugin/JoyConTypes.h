@@ -17,13 +17,6 @@ enum class ControllerType
 	JOYCON_RIGHT,	// 右Joy-Con
 };
 
-// デバイスの入力レポートモードを表す列挙子
-enum class DeviceInputMode
-{
-	MODE_DEFAULT,	// デフォルト
-	MODE_FULL,		// フル
-};
-
 // ボタンの種類を表す列挙子
 enum class ButtonType
 {
@@ -55,15 +48,6 @@ struct DeviceInfo
 	DeviceID deviceID;		// そのデバイスのID
 	ControllerType type;	// コントローラーの種類
 	bool isConnected;		// 接続できたか
-};
-
-// 取得した生データ（デフォルトモード+Joy-Con）
-struct JoyConRawDefaultInputData
-{
-	uint8_t inputReportID;	// 入力レポートID
-
-	std::array<uint8_t, 2> buttonState;	// ボタンデータ
-	uint8_t stickHat;		// スティックハットデータ
 };
 
 // 取得した生データ（フルモード）

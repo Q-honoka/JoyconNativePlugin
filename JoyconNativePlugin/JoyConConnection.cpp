@@ -92,40 +92,6 @@ bool JoyConConnection::SetFullReportMode(DeviceID id)
 }
 
 /// <summary>
-/// コントローラーの最新データを取得する（デフォルトモード+Joy-Con）
-/// </summary>
-/// <param name="id">取得したいデバイスのID</param>
-/// <param name="inputData">取得したデータの格納先の参照</param>
-/// <returns>取得できたか</returns>
-bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawDefaultInputData& inputData)
-{
-	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
-
-	// 受け取ったデータサイズが0より大きいなら処理を続ける
-	int result = 0;
-	{
-		std::lock_guard<std::mutex> lock(devices[id].mtx);
-		result = hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE);
-	}
-
-	if (result > 0)
-	{
-		// データが正しく受け取ることができていない場合は、falseを返す
-		if (buf[0] != 0x3F) return false;
-
-		// 生データを分けて格納する
-		inputData.inputReportID = buf[0];
-		inputData.buttonState[0] = buf[1];
-		inputData.buttonState[1] = buf[2];
-		inputData.stickHat = buf[3];
-
-		return true;
-	}
-
-	return false;
-}
-
-/// <summary>
 /// コントローラーの最新データを取得する（フルモード）
 /// </summary>
 /// <param name="id">取得したいデバイスのID</param>
@@ -135,8 +101,8 @@ bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawFullInputData& inpu
 {
 	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
 
-	// 受け取ったデータサイズが0より大きいなら処理を続ける
 	int result = 0;
+	// 受け取ったデータサイズが0より大きいなら処理を続ける
 	{
 		std::lock_guard<std::mutex> lock(devices[id].mtx);
 		result = hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE);
@@ -491,18 +457,24 @@ DeviceInfo JoyConConnection::ConnectionControllerImpl(std::optional<ControllerTy
 				device = device->next;
 				continue;
 			}
+			hid_set_nonblocking(handle, 1);
 
 			// ハンドルとパスの登録
 			DeviceID id = CreateDeviceID();
 			devices.try_emplace(id, handle, device->path, 0);
 			devicePaths.insert(std::string(device->path));
-			// デバイス情報を作成して返す
-			return
+
+			// 入力モードをフルに変更する
+			if (SetFullReportMode(id))
 			{
-				id,
-				GetControllerType(device->product_id),
-				true
-			};
+				// デバイス情報を作成して返す
+				return
+				{
+					id,
+					GetControllerType(device->product_id),
+					true
+				};
+			}
 		}
 
 		device = device->next;
