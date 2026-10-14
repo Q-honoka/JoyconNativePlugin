@@ -17,6 +17,16 @@ enum class ControllerType
 	JOYCON_RIGHT,	// 右Joy-Con
 };
 
+// バッテリーの状態を表す列挙子
+enum class BatteryState
+{
+	BATTERY_FULL,		// フル
+	BATTERY_MEDIUM,		// 並
+	BATTERY_LOW,		// 低い
+	BATTERY_CRITICAL,	// 切れそう
+	BATTERY_EMPTY		// 空
+};
+
 // ボタンの種類を表す列挙子
 enum class ButtonType
 {
@@ -92,6 +102,26 @@ struct JoyConRawFullInputData
 	int16_t priorGyro1;	// ２つ前のジャイロ1
 	int16_t priorGyro2;	// ２つ前のジャイロ2
 	int16_t priorGyro3;	// ２つ前のジャイロ3
+};
+
+// 加工後のJoy-Conのデータ（フルモード）
+struct JoyConProcessedFullData
+{
+	BatteryState batteryState;	// バッテリーの状態
+	bool buttonState[20];		// ボタンの状態
+
+	float leftStickHorizontalData;	// 左スティックのx方向データ
+	float leftStickVerticalData;	// 左スティックのy方向データ
+	float rightStickHorizontalData;	// 右スティックのx方向データ
+	float rightStickVerticalData;	// 右スティックのy方向データ
+
+	float accX;	// 加速度X
+	float accY;	// 加速度Y
+	float accZ;	// 加速度Z
+
+	float gyroX;	// ジャイロX
+	float gyroY;	// ジャイロY
+	float gyroZ;	// ジャイロZ
 };
 
 // アナログスティックの校正値
