@@ -60,6 +60,7 @@ DeviceInfo JoyConConnection::ConnectionController(ControllerType type)
 /// <param name="id">切断したいコントローラーのデバイスID</param>
 void JoyConConnection::DisconnectionController(DeviceID id)
 {
+	std::lock_guard<std::mutex> lock(devices[id].mtx);
 	hid_close(devices[id].handle);
 }
 
@@ -79,6 +80,7 @@ bool JoyConConnection::SetFullReportMode(DeviceID id)
 	buf[11] = SUBCOMMAND_DATA_FULLREPORT;		// フルレポートモード
 
 	// サブコマンドを送信できたかどうかを返す
+	std::lock_guard<std::mutex> lock(devices[id].mtx);
 	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) >= 0)
 	{
 		// パケット番号を更新する
@@ -100,7 +102,13 @@ bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawDefaultInputData& i
 	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
 
 	// 受け取ったデータサイズが0より大きいなら処理を続ける
-	if (hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE) > 0)
+	int result = 0;
+	{
+		std::lock_guard<std::mutex> lock(devices[id].mtx);
+		result = hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE);
+	}
+
+	if (result > 0)
 	{
 		// データが正しく受け取ることができていない場合は、falseを返す
 		if (buf[0] != 0x3F) return false;
@@ -128,18 +136,24 @@ bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawFullInputData& inpu
 	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
 
 	// 受け取ったデータサイズが0より大きいなら処理を続ける
-	if (hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE) > 0)
+	int result = 0;
+	{
+		std::lock_guard<std::mutex> lock(devices[id].mtx);
+		result = hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE);
+	}
+
+	if (result > 0)
 	{
 		// データが正しく受け取ることができていない場合は、falseを返す
 		if (buf[0] != 0x30 && buf[0] != 0x21) return false;
-		
+
 		// 生データを分けて格納する
 		inputData.inputReportID = buf[0];
 		inputData.timer = buf[1];
-		
+
 		inputData.battery = (buf[2] & 0xF0);
 		inputData.connection = (buf[2] & 0x0F);
-		
+
 		inputData.buttonState[0] = buf[3];
 		inputData.buttonState[1] = buf[4];
 		inputData.buttonState[2] = buf[5];
@@ -205,11 +219,20 @@ bool JoyConConnection::GetRawStickCalibrationData(DeviceID id, RawStickCalibrati
 	buf[15] = 18;
 
 	// 送信結果が0未満なら、取得失敗
-	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) < 0) 
+	int result = 0;
+	{
+		std::lock_guard<std::mutex> lock(devices[id].mtx);
+		result = hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE);
+	}
+	if (result < 0)
 		return false;
 
 	// 読み取ったデータが0より大きいなら処理を続ける
-	if (hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE) > 0)
+	{
+		std::lock_guard<std::mutex> lock(devices[id].mtx);
+		result = hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE);
+	}
+	if (result > 0)
 	{
 		// 応答がなければ取得失敗
 		if (buf[0] != 0x21) return false;
@@ -231,8 +254,11 @@ bool JoyConConnection::GetRawStickCalibrationData(DeviceID id, RawStickCalibrati
 		calibrationData.rightStickValue[5] = (buf[36] << 4) | (buf[35] >> 4);
 
 		// パケット番号を更新する
-		devices[id].packetNumber = (devices[id].packetNumber + 1) & 0x0F;
-		return true;
+		{
+			std::lock_guard<std::mutex> lock(devices[id].mtx);
+			devices[id].packetNumber = (devices[id].packetNumber + 1) & 0x0F;
+			return true;
+		}
 	}
 
 	return false;
@@ -261,18 +287,30 @@ bool JoyConConnection::GetRaw6AxisCalibrationData(DeviceID id, Raw6AxisCalibrati
 	buf[15] = 24;
 
 	// 送信結果が0未満なら、取得失敗
-	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) < 0)
+	int result = 0;
+	{
+		std::lock_guard<std::mutex> lock(devices[id].mtx);
+		result = hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE);
+	}
+	if (result < 0)
 		return false;
 
 	// 読み取ったデータが0より大きいなら処理を続ける
-	if (hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE) > 0)
+	{
+		std::lock_guard<std::mutex> lock(devices[id].mtx);
+		result = hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE);
+	}
+	if (result > 0)
 	{
 		// 応答がなければ取得失敗
 		if (buf[0] != 0x21) return false;
 
 		// パケット番号を更新する
-		devices[id].packetNumber = (devices[id].packetNumber + 1) & 0x0F;
-		return true;
+		{
+			std::lock_guard<std::mutex> lock(devices[id].mtx);
+			devices[id].packetNumber = (devices[id].packetNumber + 1) & 0x0F;
+			return true;
+		}
 	}
 
 	return false;
@@ -303,6 +341,7 @@ bool JoyConConnection::EnableVibration(DeviceID id)
 	buf[11] = 0x01;		// 有効化する
 
 	// サブコマンドの送信結果を返す
+	std::lock_guard<std::mutex> lock(devices[id].mtx);
 	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) >= 0)
 	{
 		// パケット番号を更新する
@@ -329,7 +368,7 @@ bool JoyConConnection::SendRumble(DeviceID id, RumbleParameter param, Controller
 
 	buf[0] = 0x01;
 	buf[1] = devices[id].packetNumber;
-	
+
 	// Joy-Conのタイプごとに適切な場所にデータを入れる
 	if (type == ControllerType::JOYCON_LEFT)
 	{
@@ -349,6 +388,7 @@ bool JoyConConnection::SendRumble(DeviceID id, RumbleParameter param, Controller
 	}
 
 	// サブコマンドの送信結果を返す
+	std::lock_guard<std::mutex> lock(devices[id].mtx);
 	if (hid_write(devices[id].handle, buf, DEFAULT_BUF_SIZE) >= 0)
 	{
 		// パケット番号を更新する
@@ -454,13 +494,7 @@ DeviceInfo JoyConConnection::ConnectionControllerImpl(std::optional<ControllerTy
 
 			// ハンドルとパスの登録
 			DeviceID id = CreateDeviceID();
-			ControllerInfo info = 
-			{ 
-				handle, 
-				device->path, 
-				0 
-			};
-			devices.emplace(id, info);
+			devices.try_emplace(id, handle, device->path, 0);
 			devicePaths.insert(std::string(device->path));
 			// デバイス情報を作成して返す
 			return
@@ -513,7 +547,7 @@ EncodedRumbleData JoyConConnection::Encode(RumbleParameter param)
 		encodedHexAmp = (uint8_t)round(log2f(amp * 8.7f) * 32.f);
 	else if (amp > 0.12f)
 		encodedHexAmp = (uint8_t)round(log2f(amp * 17.f) * 16.f);
-	
+
 	highAmplitude = encodedHexAmp * 2;
 	lowAmplitude = encodedHexAmp / 2 + 64;
 

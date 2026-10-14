@@ -5,6 +5,7 @@
 #include <optional>
 #include <atomic>
 #include <string>
+#include <mutex>
 #include "hidapi.h"
 #include "JoyConTypes.h"
 
@@ -45,6 +46,7 @@ private:
 		hid_device* handle;		// デバイスハンドル
 		std::string path;		// パス
 		uint8_t packetNumber;	// パケット番号
+		std::mutex mtx;			// 競合回避用mutex
 	};
 	std::atomic<DeviceID> nextDeviceID;		// デバイスID
 	bool successInit;	// 初期化に成功したか

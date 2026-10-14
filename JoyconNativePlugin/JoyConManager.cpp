@@ -82,6 +82,12 @@ DeviceID JoyConManager::Connected()
 /// <param name="id">切断を解除したいJoy-ConのデバイスID</param>
 void JoyConManager::DisConnect(DeviceID id)
 {
+	auto it = std::find_if(joycons.begin(), joycons.end(),
+		[id](const std::unique_ptr<JoyConDevice>& device)
+			{
+				return device->GetID() == id;
+			});
+	if (it != joycons.end()) joycons.erase(it);
 	joyconConnection.DisconnectionController(id);
 }
 
@@ -96,7 +102,29 @@ void JoyConManager::Update()
 		{
 			if (!isRunning) break;
 
-			j->Update();
+			// Joy-Conの入力レポートタイプに応じて取得するデータを変更する
+			switch (j->GetInputMode())
+			{
+			case DeviceInputMode::MODE_DEFAULT:
+				JoyConRawDefaultInputData defaultData;
+				if (joyconConnection.GetRawInputData(j->GetID(), defaultData))
+				{
+					printf("デフォルトデータ取得完了\n");
+					j->UpdateData(defaultData);
+				}
+				break;
+
+			case DeviceInputMode::MODE_FULL:
+				JoyConRawFullInputData data;
+				if (joyconConnection.GetRawInputData(j->GetID(), data))
+				{
+					printf("データ取得完了\n");
+					j->UpdateData(data);
+				}
+				break;
+			default:
+				break;
+			}
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));

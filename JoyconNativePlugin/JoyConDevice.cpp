@@ -1,5 +1,4 @@
 ﻿#include "JoyConDevice.h"
-#include "JoyConConnection.h"
 
 /// <summary>
 /// コンストラクタ
@@ -12,34 +11,44 @@ JoyConDevice::JoyConDevice(DeviceID id, ControllerType t) :
 	mode(DeviceInputMode::MODE_DEFAULT),
 	defaultData(),
 	fullData()
+{ }
+
+/// <summary>
+/// データを更新する(デフォルト)
+/// </summary>
+/// <param name="data">生データ</param>
+void JoyConDevice::UpdateData(const JoyConRawDefaultInputData data)
 {
+	defaultData = data;
+
+	// TODO:生データを加工する
 }
 
 /// <summary>
-/// デストラクタで接続を切断する
+/// データを更新する(フル)
 /// </summary>
-JoyConDevice::~JoyConDevice()
+/// <param name="data">生データ</param>
+void JoyConDevice::UpdateData(const JoyConRawFullInputData data)
 {
-	
+	fullData = data;
+
+	// TODO:生データを加工する
 }
 
 /// <summary>
-/// 入力データを更新する
+/// デバイスIDを返す
 /// </summary>
-/// <returns>true：成功, false：失敗</returns>
-bool JoyConDevice::Update()
+/// <returns>デバイスID</returns>
+DeviceID JoyConDevice::GetID() const
 {
-	// 生データを更新する
-	return UpdateInputReport();
+	return ID;
 }
 
 /// <summary>
-/// 生データを更新する
+/// デバイスの入力レポートの種類を返す
 /// </summary>
-/// <returns>更新できたら true を返す</returns>
-bool JoyConDevice::UpdateInputReport()
+/// <returns>入力レポートモード</returns>
+DeviceInputMode JoyConDevice::GetInputMode() const
 {
-	bool updated = false;		// 更新できたか
-
-	return updated;
+	return mode;
 }
