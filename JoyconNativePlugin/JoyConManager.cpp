@@ -98,7 +98,7 @@ void JoyConManager::Update()
 {
 	while (isRunning)
 	{
-		printf("アップデート処理中\n");
+		//printf("アップデート処理中\n");
 		for (auto& j : joycons)
 		{
 			if (!isRunning) break;
@@ -106,11 +106,34 @@ void JoyConManager::Update()
 			JoyConRawFullInputData data;
 			if (joyconConnection.GetRawInputData(j->GetID(), data))
 			{
-				printf("データ取得完了\n");
+				//printf("データ取得完了\n");
 				j->UpdateData(data);
 			}
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
+}
+
+/// <summary>
+/// バッテリーの状態を返す
+/// </summary>
+/// <param name="id">状態を取得するデバイスID</param>
+/// <returns>バッテリーの状態を表す列挙子</returns>
+BatteryState JoyConManager::GetBatteryState(DeviceID id) const
+{
+	auto it = std::find_if(joycons.begin(), joycons.end(),
+		[id](const std::unique_ptr<JoyConDevice>& device)
+		{
+			return device->GetID() == id;
+		});
+
+	// 指定のIDがある場合、状態を返す
+	if (it != joycons.end())
+	{
+		return (*it)->GetBatteryState();
+	}
+
+	// ない場合は、エラーを返す
+	return BatteryState::BATTERY_ERROR;
 }

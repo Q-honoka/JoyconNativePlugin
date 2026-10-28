@@ -32,7 +32,8 @@ extern "C" JOYCONNATIVEPLUGIN_API void JoyConDisConnect(DeviceID id);		// Joy-Co
 *	Joy-Conのデータ取得に関する処理関数
 */
 
-extern "C" JOYCONNATIVEPLUGIN_API void GetButtonState(DeviceID id, uint8_t* state);		// ボタンの状態を取得する関数
+extern "C" JOYCONNATIVEPLUGIN_API BatteryState GetBatteryState(DeviceID id);	// バッテリーの状態を取得する
+extern "C" JOYCONNATIVEPLUGIN_API bool GetButtonState(DeviceID id, ButtonType type);		// ボタンの状態を取得する関数
 extern "C" JOYCONNATIVEPLUGIN_API void GetStickData(DeviceID id, float* horizontal, float* vertical);		// スティックの傾きを取得する関数
 extern "C" JOYCONNATIVEPLUGIN_API void GetGyroData(DeviceID id, float* gyroX, float* gyroY, float gyroZ);	// ジャイロデータの取得
 extern "C" JOYCONNATIVEPLUGIN_API void GetAccelData(DeviceID id, float* accX, float* accY, float accZ);		// 加速度データを取得する関数

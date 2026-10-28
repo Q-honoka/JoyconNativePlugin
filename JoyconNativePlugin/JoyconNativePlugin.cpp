@@ -43,3 +43,13 @@ void JoyConDisConnect(DeviceID id)
 {
 	return JoyConManager::GetInstance().DisConnect(id);
 }
+
+/// <summary>
+/// バッテリーの状態を返す
+/// </summary>
+/// <param name="id">状態を取得したいJoy-ConのデバイスID</param>
+/// <returns>バッテリーの状態を表す列挙子</returns>
+BatteryState GetBatteryState(DeviceID id)
+{
+	return JoyConManager::GetInstance().GetBatteryState(id);
+}

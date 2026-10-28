@@ -24,6 +24,33 @@ int main()
     }
     std::cout << "接続成功。" << std::endl;
 
+    switch (GetBatteryState(id))
+    {
+    case BatteryState::BATTERY_FULL:
+        std::cout << "フルバッテリー" << std::endl;
+        break;
+
+    case BatteryState::BATTERY_MEDIUM:
+        std::cout << "並バッテリー" << std::endl;
+        break;
+
+    case BatteryState::BATTERY_LOW:
+        std::cout << "低バッテリー" << std::endl;
+        break;
+
+    case BatteryState::BATTERY_CRITICAL:
+        std::cout << "バッテリー切れそう" << std::endl;
+        break;
+
+    case BatteryState::BATTERY_EMPTY:
+        std::cout << "空バッテリー" << std::endl;
+        break;
+
+    case BatteryState::BATTERY_ERROR:
+        std::cout << "バッテリーエラー" << std::endl;
+        break;
+    }
+
     std::cin.get();
 
     JoyConDisConnect(id);

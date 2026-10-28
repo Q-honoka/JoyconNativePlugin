@@ -20,10 +20,13 @@ public:
 	JoyConDevice(DeviceID id, ControllerType t);	// コンストラクタ
 	void UpdateData(const JoyConRawFullInputData data);			// 入力データの更新(フル)
 	DeviceID GetID() const;		// ID取得
+	BatteryState GetBatteryState() const;
 
 private:
+	JoyConProcessedFullData ProcessedJoyConFullData(const JoyConRawFullInputData& data);
+
 	DeviceID ID;			// デバイスID
 	ControllerType type;		// コントローラーの種類
 
-	JoyConRawFullInputData fullData;			// フル入力生データ
+	JoyConProcessedFullData processedData;		// 加工済みフル入力データ
 };
