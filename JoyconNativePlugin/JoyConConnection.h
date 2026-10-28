@@ -33,7 +33,7 @@ public:
 	void DisconnectionController(DeviceID id);		// コントローラーの切断処理
 	bool SetFullReportMode(DeviceID id);	// フルレポートモードのサブコマンドを送信する
 	bool GetRawInputData(DeviceID id, JoyConRawFullInputData& inputData);		// コントローラーの最新データを取得する（フルモード）
-	bool GetRawStickCalibrationData(DeviceID id, RawStickCalibrationData& calibrationData);	// スティックの校正値を取得する
+	bool GetStickCalibrationData(DeviceID id, StickCalibrationData& calibrationData);	// スティックの校正値を取得する
 	bool GetRaw6AxisCalibrationData(DeviceID id, Raw6AxisCalibrationData& calibrationData);	// 6軸モーションの校正値を取得する
 	bool SuccessInit() const;		// HIDAPIの初期化に成功したか
 	bool EnableVibration(DeviceID id);			// 振動を有効にする

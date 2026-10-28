@@ -54,3 +54,16 @@ inline void ProcessButtonData(const std::array<uint8_t, 3>& data, bool* state)
 		}
 	}
 }
+
+/// <summary>
+/// スティックデータを加工する
+/// </summary>
+/// <param name="horizontalData">垂直方向のデータ</param>
+/// <param name="verticalData">水平方向のデータ</param>
+/// <param name="processHorizontal">垂直方向のデータの格納先</param>
+/// <param name="processVertical">水平方向のデータの格納先</param>
+/// <param name="cab">校正値</param>
+inline void ProcessStickHorizontalData(const uint16_t horizontalData, const uint16_t verticalData, float* processHorizontal, float processVertical, StickCalibrationData cab)
+{
+
+}

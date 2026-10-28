@@ -126,10 +126,26 @@ struct JoyConProcessedFullData
 };
 
 // アナログスティックの校正値
-struct RawStickCalibrationData
+struct StickCalibrationData
 {
-	std::array<uint16_t, 6> leftStickValue;		// 左スティックの校正値
-	std::array<uint16_t, 6> rightStickValue;	// 右スティックの校正値
+	uint16_t RcenterX;	// 中心のX値
+	uint16_t RcenterY;	// 中心のY値
+
+	uint16_t RmaxX;	// 最大のX値
+	uint16_t RmaxY;	// 最大のY値
+	
+	uint16_t RminX;	// 最小のX値
+	uint16_t RminY;	// 最小のY値
+
+
+	uint16_t LcenterX;	// 中心のX値
+	uint16_t LcenterY;	// 中心のY値
+
+	uint16_t LmaxX;	// 最大のX値
+	uint16_t LmaxY;	// 最大のY値
+
+	uint16_t LminX;	// 最小のX値
+	uint16_t LminY;	// 最小のY値
 };
 
 // 6軸モーションの校正値

@@ -1,4 +1,5 @@
 ﻿#include "JoyConConnection.h"
+#include <iostream>
 
 constexpr int VENDOR_NINTENDO = 0x057E;		// 任天堂のベンダーID
 constexpr int PRODUCT_JOYCON_L = 0x2006;	// Joy-Con(L)のプロダクトID
@@ -168,7 +169,7 @@ bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawFullInputData& inpu
 /// <param name="id">取得したいデバイスのID</param>
 /// <param name="calibrationData">校正値の格納先の参照</param>
 /// <returns>取得できたか</returns>
-bool JoyConConnection::GetRawStickCalibrationData(DeviceID id, RawStickCalibrationData& calibrationData)
+bool JoyConConnection::GetStickCalibrationData(DeviceID id, StickCalibrationData& calibrationData)
 {
 	// 送信するデータ
 	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
@@ -198,26 +199,68 @@ bool JoyConConnection::GetRawStickCalibrationData(DeviceID id, RawStickCalibrati
 		std::lock_guard<std::mutex> lock(devices[id].mtx);
 		result = hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE);
 	}
+
+	for (int i = 0; i < result; i++)
+	{
+		printf("%02X ", buf[i]);
+	}
+	printf("\n");
+
 	if (result > 0)
 	{
 		// 応答がなければ取得失敗
-		if (buf[0] != 0x21) return false;
+		if (buf[0] != 0x21 || buf[14] != 0x10) return false;
 
 		// 左スティックの校正値
-		calibrationData.leftStickValue[0] = (buf[20] << 8) & 0xF00 | buf[19];
-		calibrationData.leftStickValue[1] = (buf[21] << 4) | (buf[20] >> 4);
-		calibrationData.leftStickValue[2] = (buf[23] << 8) & 0xF00 | buf[22];
-		calibrationData.leftStickValue[3] = (buf[24] << 4) | (buf[23] >> 4);
-		calibrationData.leftStickValue[4] = (buf[26] << 8) & 0xF00 | buf[25];
-		calibrationData.leftStickValue[5] = (buf[27] << 4) | (buf[26] >> 4);
+		uint16_t decoded[6];
+
+		decoded[0] = (buf[20] << 8) & 0xF00 | buf[19];
+		decoded[1] = (buf[21] << 4) | (buf[20] >> 4);
+		decoded[2] = (buf[23] << 8) & 0xF00 | buf[22];
+		decoded[3] = (buf[24] << 4) | (buf[23] >> 4);
+		decoded[4] = (buf[26] << 8) & 0xF00 | buf[25];
+		decoded[5] = (buf[27] << 4) | (buf[26] >> 4);
+
+		for (int i = 0; i < 6; i++)
+		{
+			printf("L decoded[%d] %02X \n",i, decoded[i]);
+		}
+		printf("\n");
+
+		calibrationData.LcenterX = decoded[2];
+		calibrationData.LcenterY = decoded[3];
+		calibrationData.LmaxX = calibrationData.LcenterX + decoded[0];
+		calibrationData.LmaxY = calibrationData.LcenterY + decoded[1];
+		calibrationData.LminX = calibrationData.LcenterX - decoded[4];
+		calibrationData.LminY = calibrationData.LcenterY - decoded[5];
 
 		// 右スティックの校正値
-		calibrationData.rightStickValue[0] = (buf[29] << 8) & 0xF00 | buf[28];
-		calibrationData.rightStickValue[1] = (buf[30] << 4) | (buf[29] >> 4);
-		calibrationData.rightStickValue[2] = (buf[32] << 8) & 0xF00 | buf[31];
-		calibrationData.rightStickValue[3] = (buf[33] << 4) | (buf[32] >> 4);
-		calibrationData.rightStickValue[4] = (buf[35] << 8) & 0xF00 | buf[34];
-		calibrationData.rightStickValue[5] = (buf[36] << 4) | (buf[35] >> 4);
+		decoded[0] = (buf[29] << 8) & 0xF00 | buf[28];
+		decoded[1] = (buf[30] << 4) | (buf[29] >> 4);
+		decoded[2] = (buf[32] << 8) & 0xF00 | buf[31];
+		decoded[3] = (buf[33] << 4) | (buf[32] >> 4);
+		decoded[4] = (buf[35] << 8) & 0xF00 | buf[34];
+		decoded[5] = (buf[36] << 4) | (buf[35] >> 4);
+
+		for (int i = 0; i < 6; i++)
+		{
+			printf("R decoded[%d] %02X \n",i, decoded[i]);
+		}
+		printf("\n");
+
+		calibrationData.RcenterX = decoded[0];
+		calibrationData.RcenterY = decoded[1];
+		calibrationData.RmaxX = calibrationData.RcenterX + decoded[4];
+		calibrationData.RmaxY = calibrationData.RcenterY + decoded[5];
+		calibrationData.RminX = calibrationData.RcenterX - decoded[2];
+		calibrationData.RminY = calibrationData.RcenterY - decoded[3];
+
+		std::cout << "RX Center: " << calibrationData.RcenterX << std::endl;
+		std::cout << "RY Center: " << calibrationData.RcenterY << std::endl;
+		std::cout << "RX Max: " << calibrationData.RmaxX << std::endl;
+		std::cout << "RY Max: " << calibrationData.RmaxY << std::endl;
+		std::cout << "RX Min: " << calibrationData.RminX << std::endl;
+		std::cout << "RY Min: " << calibrationData.RminY << std::endl;
 
 		// パケット番号を更新する
 		{

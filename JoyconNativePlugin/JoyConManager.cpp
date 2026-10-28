@@ -98,15 +98,25 @@ void JoyConManager::Update()
 {
 	while (isRunning)
 	{
-		//printf("アップデート処理中\n");
 		for (auto& j : joycons)
 		{
 			if (!isRunning) break;
 
+			// 校正値を取得していなければ、取得する
+			if (j->IsGetCalibrationData() == false)
+			{
+				printf("校正値を取得\n");
+				StickCalibrationData data;
+				if (joyconConnection.GetStickCalibrationData(j->GetID(), data))
+				{
+					j->SetCalibrationData(data);
+					printf("校正値を取得完了\n");
+				}
+			}
+
 			JoyConRawFullInputData data;
 			if (joyconConnection.GetRawInputData(j->GetID(), data))
 			{
-				//printf("データ取得完了\n");
 				j->UpdateData(data);
 			}
 		}

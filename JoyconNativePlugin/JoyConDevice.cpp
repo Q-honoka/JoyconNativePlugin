@@ -1,5 +1,6 @@
 ﻿#include "JoyConDevice.h"
 #include "JoyConUtility.h"
+#include <iostream>
 
 /// <summary>
 /// コンストラクタ
@@ -9,7 +10,9 @@
 JoyConDevice::JoyConDevice(DeviceID id, ControllerType t) :
 	ID(id),
 	type(t),
-	processedData()
+	getCalibrationData(false),
+	processedData(),
+	stickCalibrationData()
 { }
 
 /// <summary>
@@ -20,6 +23,16 @@ void JoyConDevice::UpdateData(const JoyConRawFullInputData data)
 {
 	// TODO:生データを加工する
 	processedData = ProcessedJoyConFullData(data);
+}
+
+/// <summary>
+/// 校正値を設定する
+/// </summary>
+/// <param name="data">スティックデータの校正値</param>
+void JoyConDevice::SetCalibrationData(StickCalibrationData data)
+{
+	stickCalibrationData = data;
+	getCalibrationData = true;
 }
 
 /// <summary>
@@ -48,6 +61,15 @@ BatteryState JoyConDevice::GetBatteryState() const
 bool JoyConDevice::GetButtonState(ButtonType type) const
 {
 	return processedData.buttonState[(int)type];
+}
+
+/// <summary>
+/// 校正値を取得したかどうかを返す
+/// </summary>
+/// <returns>取得していたら true を返す</returns>
+bool JoyConDevice::IsGetCalibrationData() const
+{
+	return getCalibrationData;
 }
 
 /// <summary>
