@@ -16,18 +16,19 @@
 /// <returns>バッテリーの状態を表す列挙子</returns>
 inline BatteryState ProcessBatteryData(const uint8_t data)
 {
+	uint8_t battery = (data >> 4) & 0x0F;
 	// データの数値に対応したバッテリーの状態を返す
-	switch (data)
+	switch (battery)
 	{
-	case BUTTERY_FULL_VALUE:
+	case BATTERY_FULL_VALUE:
 		return BatteryState::BATTERY_FULL;
-	case BUTTERY_MEDIUM_VALUE:
+	case BATTERY_MEDIUM_VALUE:
 		return BatteryState::BATTERY_MEDIUM;
-	case BUTTERY_LOW_VALUE:
+	case BATTERY_LOW_VALUE:
 		return BatteryState::BATTERY_LOW;
-	case BUTTERY_CRITICAL_VALUE:
+	case BATTERY_CRITICAL_VALUE:
 		return BatteryState::BATTERY_CRITICAL;
-	case BUTTERY_EMPTY_VALUE:
+	case BATTERY_EMPTY_VALUE:
 		return BatteryState::BATTERY_EMPTY;
 	}
 
