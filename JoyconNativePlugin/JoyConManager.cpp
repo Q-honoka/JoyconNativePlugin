@@ -137,3 +137,27 @@ BatteryState JoyConManager::GetBatteryState(DeviceID id) const
 	// ない場合は、エラーを返す
 	return BatteryState::BATTERY_ERROR;
 }
+
+/// <summary>
+/// ボタンの状態を返す
+/// </summary>
+/// <param name="id">デバイスID</param>
+/// <param name="type">ボタンの種類</param>
+/// <returns>押されている場合は true を返す</returns>
+bool JoyConManager::GetButtonState(DeviceID id, ButtonType type) const
+{
+	auto it = std::find_if(joycons.begin(), joycons.end(),
+		[id](const std::unique_ptr<JoyConDevice>& device)
+		{
+			return device->GetID() == id;
+		});
+
+	// 指定のIDがある場合、状態を返す
+	if (it != joycons.end())
+	{
+		return (*it)->GetButtonState(type);
+	}
+
+	// ない場合は、false を返す
+	return false;
+}

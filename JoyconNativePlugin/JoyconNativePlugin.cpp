@@ -53,3 +53,14 @@ BatteryState GetBatteryState(DeviceID id)
 {
 	return JoyConManager::GetInstance().GetBatteryState(id);
 }
+
+/// <summary>
+/// ボタンの状態を返す
+/// </summary>
+/// <param name="id">状態を取得したいJoy-ConのデバイスID</param>
+/// <param name="type">取得したいボタンの種類</param>
+/// <returns>押されている場合は true を返す</returns>
+bool GetButtonState(DeviceID id, ButtonType type)
+{
+	return JoyConManager::GetInstance().GetButtonState(id, type);
+}

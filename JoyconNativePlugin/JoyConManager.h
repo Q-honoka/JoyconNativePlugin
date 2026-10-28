@@ -33,7 +33,8 @@ public:
 	*	データを返す関数
 	*/
 
-	BatteryState GetBatteryState(DeviceID id) const;
+	BatteryState GetBatteryState(DeviceID id) const;	// バッテリーの状態を返す
+	bool GetButtonState(DeviceID id, ButtonType type) const;	// ボタンの状態を返す
 
 	/*
 	*	コピーガード

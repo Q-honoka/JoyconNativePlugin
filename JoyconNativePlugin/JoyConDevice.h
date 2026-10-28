@@ -20,7 +20,8 @@ public:
 	JoyConDevice(DeviceID id, ControllerType t);	// コンストラクタ
 	void UpdateData(const JoyConRawFullInputData data);			// 入力データの更新(フル)
 	DeviceID GetID() const;		// ID取得
-	BatteryState GetBatteryState() const;
+	BatteryState GetBatteryState() const;	// バッテリーの状態を返す
+	bool GetButtonState(ButtonType type) const;	// ボタンの状態を返す	
 
 private:
 	JoyConProcessedFullData ProcessedJoyConFullData(const JoyConRawFullInputData& data);

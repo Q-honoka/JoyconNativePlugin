@@ -41,6 +41,16 @@ BatteryState JoyConDevice::GetBatteryState() const
 }
 
 /// <summary>
+/// ボタンの状態を返す
+/// </summary>
+/// <param name="type">ボタンの種類</param>
+/// <returns>押されている場合は true を返す</returns>
+bool JoyConDevice::GetButtonState(ButtonType type) const
+{
+	return processedData.buttonState[(int)type];
+}
+
+/// <summary>
 /// JoyConの生データを加工する
 /// </summary>
 /// <param name="data">生データ</param>

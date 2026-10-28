@@ -51,7 +51,16 @@ int main()
         break;
     }
 
-    std::cin.get();
+    // 指定のボタンが押されるまでループ
+    bool isEnd = false;
+    while (isEnd == false)
+    {
+        if (GetButtonState(id, ButtonType::BUTTON_ZL) || GetButtonState(id,ButtonType::BUTTON_ZR))
+        {
+            std::cout << "ボタンが押された。ループ終了" << std::endl;
+            isEnd = true;
+        }
+    }
 
     JoyConDisConnect(id);
     JoyConFinalize();
