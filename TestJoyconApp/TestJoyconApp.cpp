@@ -36,6 +36,7 @@ int main()
 
         if (GetButtonState(id, ButtonType::BUTTON_SR))
         {
+            // バッテリーの状態取得
             switch (GetBatteryState(id))
             {
             case BatteryState::BATTERY_FULL:
@@ -63,12 +64,14 @@ int main()
                 break;
             }
 
+            // スティックデータの取得
 			float horizontal, vertical;
 			GetStickData(id, &horizontal, &vertical);
 			std::cout << "スティックの傾きは、水平:" << horizontal << " 垂直:" << vertical << std::endl;
         }
     }
 
+    // 切断、終了処理
     JoyConDisConnect(id);
     JoyConFinalize();
 
