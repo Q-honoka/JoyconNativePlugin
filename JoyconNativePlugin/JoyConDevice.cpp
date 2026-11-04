@@ -12,7 +12,8 @@ JoyConDevice::JoyConDevice(DeviceID id, ControllerType t) :
 	type(t),
 	getCalibrationData(false),
 	processedData(),
-	stickCalibrationData()
+	LstickCalibrationData(),
+	RstickCalibrationData()
 { }
 
 /// <summary>
@@ -29,9 +30,10 @@ void JoyConDevice::UpdateData(const JoyConRawFullInputData data)
 /// 校正値を設定する
 /// </summary>
 /// <param name="data">スティックデータの校正値</param>
-void JoyConDevice::SetCalibrationData(StickCalibrationData data)
+void JoyConDevice::SetCalibrationData(StickCalibrationData Ldata, StickCalibrationData Rdata)
 {
-	stickCalibrationData = data;
+	LstickCalibrationData = Ldata;
+	RstickCalibrationData = Rdata;
 	getCalibrationData = true;
 }
 
@@ -64,6 +66,25 @@ bool JoyConDevice::GetButtonState(ButtonType type) const
 }
 
 /// <summary>
+/// スティックデータを返す
+/// </summary>
+/// <param name="horizontal">垂直方向のデータの格納先</param>
+/// <param name="vertical">水平方向のデータの格納先</param>
+void JoyConDevice::GetStickData(float* horizontal, float* vertical) const
+{
+	if (type == ControllerType::JOYCON_LEFT)
+	{
+		*horizontal = processedData.leftStickHorizontalData;
+		*vertical = processedData.leftStickVerticalData;
+	}
+	else if (type == ControllerType::JOYCON_RIGHT)
+	{
+		*horizontal = processedData.rightStickHorizontalData;
+		*vertical = processedData.rightStickVerticalData;
+	}
+}
+
+/// <summary>
 /// 校正値を取得したかどうかを返す
 /// </summary>
 /// <returns>取得していたら true を返す</returns>
@@ -83,6 +104,10 @@ JoyConProcessedFullData JoyConDevice::ProcessedJoyConFullData(const JoyConRawFul
 
 	temp.batteryState = ProcessBatteryData(data.battery);	// バッテリー
 	ProcessButtonData(data.buttonState, temp.buttonState);	// ボタンデータ
+	temp.leftStickHorizontalData = ProcessStickHorizontalData(data.leftStickHorizontal, LstickCalibrationData.centerX, LstickCalibrationData.minX, LstickCalibrationData.maxX);	// 左スティック水平
+	temp.leftStickVerticalData = ProcessStickHorizontalData(data.leftStickVertical, LstickCalibrationData.centerY, LstickCalibrationData.minY, LstickCalibrationData.maxY);	// 左スティック垂直
+	temp.rightStickHorizontalData = ProcessStickHorizontalData(data.rightStickHorizontal, RstickCalibrationData.centerX, RstickCalibrationData.minX, RstickCalibrationData.maxX);	// 右スティック水平
+	temp.rightStickVerticalData = ProcessStickHorizontalData(data.rightStickVertical, RstickCalibrationData.centerY, RstickCalibrationData.minY, RstickCalibrationData.maxY);	// 右スティック垂直
 
 	return temp;
 }

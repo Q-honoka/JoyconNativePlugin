@@ -9,6 +9,9 @@ constexpr int DEFAULT_BUF_SIZE = 0x40;		// 標準データサイズ
 
 constexpr int SUBCOMMAND_DATA_FULLREPORT = 0x30;	// フルレポートモードのサブコマンドデータ
 
+constexpr int LSTICK_CALIBRATION_START_INDEX = 20;	// 左スティックの校正値の開始インデックス
+constexpr int RSTICK_CALIBRATION_START_INDEX = 29;	// 右スティックの校正値の開始インデックス
+
 constexpr int RUMBLE_BUF_SIZE = 4;			// 振動データのサイズ
 constexpr int LEFT_RUMBLE_START_IDX = 2;	// 左Joy-Conの振動データの先頭インデックス
 constexpr int RIGHT_RUMBLE_START_IDX = 6;	// 右Joy-Conの振動データの先頭インデックス
@@ -125,10 +128,10 @@ bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawFullInputData& inpu
 		inputData.buttonState[1] = buf[4];
 		inputData.buttonState[2] = buf[5];
 
-		inputData.leftStickHorizontal = buf[6] | ((buf[7] & 0xF0) << 8);
+		inputData.leftStickHorizontal = buf[6] | ((buf[7] & 0xF) << 8);
 		inputData.leftStickVertical = (buf[7] >> 4) | (buf[8] << 4);
 
-		inputData.rightStickHorizontal = buf[9] | ((buf[10] & 0xF0) << 8);
+		inputData.rightStickHorizontal = buf[9] | ((buf[10] & 0xF) << 8);
 		inputData.rightStickVertical = (buf[10] >> 4) | (buf[11] << 4);
 
 		inputData.rumble = buf[12];
@@ -169,7 +172,7 @@ bool JoyConConnection::GetRawInputData(DeviceID id, JoyConRawFullInputData& inpu
 /// <param name="id">取得したいデバイスのID</param>
 /// <param name="calibrationData">校正値の格納先の参照</param>
 /// <returns>取得できたか</returns>
-bool JoyConConnection::GetStickCalibrationData(DeviceID id, StickCalibrationData& calibrationData)
+bool JoyConConnection::GetStickCalibrationData(DeviceID id, StickCalibrationData& LcalibrationData, StickCalibrationData& RcalibrationData)
 {
 	// 送信するデータ
 	uint8_t buf[DEFAULT_BUF_SIZE] = { 0 };
@@ -200,12 +203,6 @@ bool JoyConConnection::GetStickCalibrationData(DeviceID id, StickCalibrationData
 		result = hid_read(devices[id].handle, buf, DEFAULT_BUF_SIZE);
 	}
 
-	for (int i = 0; i < result; i++)
-	{
-		printf("%02X ", buf[i]);
-	}
-	printf("\n");
-
 	if (result > 0)
 	{
 		// 応答がなければ取得失敗
@@ -214,53 +211,34 @@ bool JoyConConnection::GetStickCalibrationData(DeviceID id, StickCalibrationData
 		// 左スティックの校正値
 		uint16_t decoded[6];
 
-		decoded[0] = (buf[20] << 8) & 0xF00 | buf[19];
-		decoded[1] = (buf[21] << 4) | (buf[20] >> 4);
-		decoded[2] = (buf[23] << 8) & 0xF00 | buf[22];
-		decoded[3] = (buf[24] << 4) | (buf[23] >> 4);
-		decoded[4] = (buf[26] << 8) & 0xF00 | buf[25];
-		decoded[5] = (buf[27] << 4) | (buf[26] >> 4);
+		decoded[0] = (buf[LSTICK_CALIBRATION_START_INDEX + 1] << 8) & 0xF00 | buf[LSTICK_CALIBRATION_START_INDEX];
+		decoded[1] = (buf[LSTICK_CALIBRATION_START_INDEX + 2] << 4) | (buf[LSTICK_CALIBRATION_START_INDEX + 1] >> 4);
+		decoded[2] = (buf[LSTICK_CALIBRATION_START_INDEX + 4] << 8) & 0xF00 | buf[LSTICK_CALIBRATION_START_INDEX + 3];
+		decoded[3] = (buf[LSTICK_CALIBRATION_START_INDEX + 5] << 4) | (buf[LSTICK_CALIBRATION_START_INDEX + 4] >> 4);
+		decoded[4] = (buf[LSTICK_CALIBRATION_START_INDEX + 7] << 8) & 0xF00 | buf[LSTICK_CALIBRATION_START_INDEX + 6];
+		decoded[5] = (buf[LSTICK_CALIBRATION_START_INDEX + 8] << 4) | (buf[LSTICK_CALIBRATION_START_INDEX + 7] >> 4);
 
-		for (int i = 0; i < 6; i++)
-		{
-			printf("L decoded[%d] %02X \n",i, decoded[i]);
-		}
-		printf("\n");
-
-		calibrationData.LcenterX = decoded[2];
-		calibrationData.LcenterY = decoded[3];
-		calibrationData.LmaxX = calibrationData.LcenterX + decoded[0];
-		calibrationData.LmaxY = calibrationData.LcenterY + decoded[1];
-		calibrationData.LminX = calibrationData.LcenterX - decoded[4];
-		calibrationData.LminY = calibrationData.LcenterY - decoded[5];
+		LcalibrationData.centerX = decoded[2];
+		LcalibrationData.centerY = decoded[3];
+		LcalibrationData.maxX = LcalibrationData.centerX + decoded[0];
+		LcalibrationData.maxY = LcalibrationData.centerY + decoded[1];
+		LcalibrationData.minX = LcalibrationData.centerX - decoded[4];
+		LcalibrationData.minY = LcalibrationData.centerY - decoded[5];
 
 		// 右スティックの校正値
-		decoded[0] = (buf[29] << 8) & 0xF00 | buf[28];
-		decoded[1] = (buf[30] << 4) | (buf[29] >> 4);
-		decoded[2] = (buf[32] << 8) & 0xF00 | buf[31];
-		decoded[3] = (buf[33] << 4) | (buf[32] >> 4);
-		decoded[4] = (buf[35] << 8) & 0xF00 | buf[34];
-		decoded[5] = (buf[36] << 4) | (buf[35] >> 4);
+		decoded[0] = (buf[RSTICK_CALIBRATION_START_INDEX + 1] << 8) & 0xF00 | buf[RSTICK_CALIBRATION_START_INDEX];
+		decoded[1] = (buf[RSTICK_CALIBRATION_START_INDEX + 2] << 4) | (buf[RSTICK_CALIBRATION_START_INDEX + 1] >> 4);
+		decoded[2] = (buf[RSTICK_CALIBRATION_START_INDEX + 4] << 8) & 0xF00 | buf[RSTICK_CALIBRATION_START_INDEX + 3];
+		decoded[3] = (buf[RSTICK_CALIBRATION_START_INDEX + 5] << 4) | (buf[RSTICK_CALIBRATION_START_INDEX + 4] >> 4);
+		decoded[4] = (buf[RSTICK_CALIBRATION_START_INDEX + 7] << 8) & 0xF00 | buf[RSTICK_CALIBRATION_START_INDEX + 6];
+		decoded[5] = (buf[RSTICK_CALIBRATION_START_INDEX + 8] << 4) | (buf[RSTICK_CALIBRATION_START_INDEX + 7] >> 4);
 
-		for (int i = 0; i < 6; i++)
-		{
-			printf("R decoded[%d] %02X \n",i, decoded[i]);
-		}
-		printf("\n");
-
-		calibrationData.RcenterX = decoded[0];
-		calibrationData.RcenterY = decoded[1];
-		calibrationData.RmaxX = calibrationData.RcenterX + decoded[4];
-		calibrationData.RmaxY = calibrationData.RcenterY + decoded[5];
-		calibrationData.RminX = calibrationData.RcenterX - decoded[2];
-		calibrationData.RminY = calibrationData.RcenterY - decoded[3];
-
-		std::cout << "RX Center: " << calibrationData.RcenterX << std::endl;
-		std::cout << "RY Center: " << calibrationData.RcenterY << std::endl;
-		std::cout << "RX Max: " << calibrationData.RmaxX << std::endl;
-		std::cout << "RY Max: " << calibrationData.RmaxY << std::endl;
-		std::cout << "RX Min: " << calibrationData.RminX << std::endl;
-		std::cout << "RY Min: " << calibrationData.RminY << std::endl;
+		RcalibrationData.centerX = decoded[0];
+		RcalibrationData.centerY = decoded[1];
+		RcalibrationData.maxX = RcalibrationData.centerX + decoded[4];
+		RcalibrationData.maxY = RcalibrationData.centerY + decoded[5];
+		RcalibrationData.minX = RcalibrationData.centerX - decoded[2];
+		RcalibrationData.minY = RcalibrationData.centerY - decoded[3];
 
 		// パケット番号を更新する
 		{

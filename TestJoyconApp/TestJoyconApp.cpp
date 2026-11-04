@@ -63,6 +63,9 @@ int main()
                 break;
             }
 
+			float horizontal, vertical;
+			GetStickData(id, &horizontal, &vertical);
+			std::cout << "スティックの傾きは、水平:" << horizontal << " 垂直:" << vertical << std::endl;
         }
     }
 

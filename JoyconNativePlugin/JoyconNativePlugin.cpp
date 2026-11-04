@@ -64,3 +64,14 @@ bool GetButtonState(DeviceID id, ButtonType type)
 {
 	return JoyConManager::GetInstance().GetButtonState(id, type);
 }
+
+/// <summary>
+/// 加工されたスティックデータを返す
+/// </summary>
+/// <param name="id">データを取得したいJoy-ConのデバイスID</param>
+/// <param name="horizontal">垂直方向のデータの格納先</param>
+/// <param name="vertical">水平方向のデータの格納先</param>
+void GetStickData(DeviceID id, float* horizontal, float* vertical)
+{
+	JoyConManager::GetInstance().GetStickData(id, horizontal, vertical);
+}

@@ -35,6 +35,7 @@ public:
 
 	BatteryState GetBatteryState(DeviceID id) const;	// バッテリーの状態を返す
 	bool GetButtonState(DeviceID id, ButtonType type) const;	// ボタンの状態を返す
+	void GetStickData(DeviceID id, float* horizontal, float* vertical) const;	// スティックの傾きを返す
 
 	/*
 	*	コピーガード

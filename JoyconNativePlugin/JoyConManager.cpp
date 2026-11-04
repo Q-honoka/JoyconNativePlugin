@@ -105,11 +105,10 @@ void JoyConManager::Update()
 			// 校正値を取得していなければ、取得する
 			if (j->IsGetCalibrationData() == false)
 			{
-				printf("校正値を取得\n");
-				StickCalibrationData data;
-				if (joyconConnection.GetStickCalibrationData(j->GetID(), data))
+				StickCalibrationData Ldata, Rdata;
+				if (joyconConnection.GetStickCalibrationData(j->GetID(), Ldata, Rdata))
 				{
-					j->SetCalibrationData(data);
+					j->SetCalibrationData(Ldata, Rdata);
 					printf("校正値を取得完了\n");
 				}
 			}
@@ -170,4 +169,29 @@ bool JoyConManager::GetButtonState(DeviceID id, ButtonType type) const
 
 	// ない場合は、false を返す
 	return false;
+}
+
+/// <summary>
+/// 加工されたスティックデータを渡す
+/// </summary>
+/// <param name="id">デバイスID</param>
+/// <param name="horizontal">垂直方向のデータの格納先</param>
+/// <param name="vertical">水平方向のデータの格納先</param>
+void JoyConManager::GetStickData(DeviceID id, float* horizontal, float* vertical) const
+{
+	auto it = std::find_if(joycons.begin(), joycons.end(),
+		[id](const std::unique_ptr<JoyConDevice>& device)
+		{
+			return device->GetID() == id;
+		});
+	// 指定のIDがある場合、状態を返す
+	if (it != joycons.end())
+	{
+		(*it)->GetStickData(horizontal, vertical);
+	}
+	else
+	{
+		*horizontal = 0.0f;
+		*vertical = 0.0f;
+	}
 }
