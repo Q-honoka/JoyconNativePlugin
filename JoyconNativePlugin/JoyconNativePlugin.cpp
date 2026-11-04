@@ -49,9 +49,9 @@ void JoyConDisConnect(DeviceID id)
 /// </summary>
 /// <param name="id">状態を取得したいJoy-ConのデバイスID</param>
 /// <returns>バッテリーの状態を表す列挙子</returns>
-BatteryState GetBatteryState(DeviceID id)
+int GetBatteryState(DeviceID id)
 {
-	return JoyConManager::GetInstance().GetBatteryState(id);
+	return static_cast<int>(JoyConManager::GetInstance().GetBatteryState(id));
 }
 
 /// <summary>
@@ -60,9 +60,9 @@ BatteryState GetBatteryState(DeviceID id)
 /// <param name="id">状態を取得したいJoy-ConのデバイスID</param>
 /// <param name="type">取得したいボタンの種類</param>
 /// <returns>押されている場合は true を返す</returns>
-bool GetButtonState(DeviceID id, ButtonType type)
+bool GetButtonState(DeviceID id, int type)
 {
-	return JoyConManager::GetInstance().GetButtonState(id, type);
+	return JoyConManager::GetInstance().GetButtonState(id, static_cast<ButtonType>(type));
 }
 
 /// <summary>

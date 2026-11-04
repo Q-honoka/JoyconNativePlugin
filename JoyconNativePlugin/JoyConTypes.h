@@ -20,37 +20,37 @@ enum class ControllerType
 // バッテリーの状態を表す列挙子
 enum class BatteryState
 {
-	BATTERY_FULL,		// フル
-	BATTERY_MEDIUM,		// 並
-	BATTERY_LOW,		// 低い
-	BATTERY_CRITICAL,	// 切れそう
-	BATTERY_EMPTY,		// 空
-	BATTERY_ERROR		// エラー
+	BATTERY_FULL = 0,		// フル
+	BATTERY_MEDIUM = 1,		// 並
+	BATTERY_LOW = 2,		// 低い
+	BATTERY_CRITICAL = 3,	// 切れそう
+	BATTERY_EMPTY = 4,		// 空
+	BATTERY_ERROR = 5		// エラー
 };
 
 // ボタンの種類を表す列挙子
 enum class ButtonType
 {
-	BUTTON_A,		// Aボタン
-	BUTTON_B,		// Bボタン
-	BUTTON_X,		// Xボタン
-	BUTTON_Y,		// Yボタン
-	BUTTON_SR,		// SRボタン
-	BUTTON_SL,		// SLボタン
-	BUTTON_R,		// Rボタン
-	BUTTON_ZR,		// ZRボタン
-	BUTTON_MINUS,	// マイナスボタン
-	BUTTON_PLUS,	// プラスボタン
-	BUTTON_R_STICK,	// Rスティックボタン
-	BUTTON_L_STICK, // Lスティックボタン
-	BUTTON_HOME,	// HOMEボタン
-	BUTTON_CAPTURE,	// CAPTUREボタン
-	BUTTON_DOWN,	// 下ボタン（縦持ち）
-	BUTTON_UP,		// 上ボタン（縦持ち）
-	BUTTON_RIGHT,	// 右ボタン（縦持ち）
-	BUTTON_LEFT,	// 左ボタン（縦持ち）
-	BUTTON_L,		// Lボタン
-	BUTTON_ZL,		// ZLボタン
+	BUTTON_A = 0,		// Aボタン
+	BUTTON_B = 1,		// Bボタン
+	BUTTON_X = 2,		// Xボタン
+	BUTTON_Y = 3,		// Yボタン
+	BUTTON_SR = 4,		// SRボタン
+	BUTTON_SL = 5,		// SLボタン
+	BUTTON_R = 6,		// Rボタン
+	BUTTON_ZR = 7,		// ZRボタン
+	BUTTON_MINUS = 8,	// マイナスボタン
+	BUTTON_PLUS = 9,	// プラスボタン
+	BUTTON_R_STICK = 10,	// Rスティックボタン
+	BUTTON_L_STICK = 11, // Lスティックボタン
+	BUTTON_HOME = 12,	// HOMEボタン
+	BUTTON_CAPTURE = 13,	// CAPTUREボタン
+	BUTTON_DOWN = 14,	// 下ボタン（縦持ち）
+	BUTTON_UP = 15,		// 上ボタン（縦持ち）
+	BUTTON_RIGHT = 16,	// 右ボタン（縦持ち）
+	BUTTON_LEFT = 17,	// 左ボタン（縦持ち）
+	BUTTON_L = 18,		// Lボタン
+	BUTTON_ZL = 19,		// ZLボタン
 };
 
 // デバイスの情報
